@@ -4,11 +4,10 @@
 
 // Імпорт функції для створення помилок з пакету http-errors.
 // Він дозволяє створювати помилки з потрібним статусом і повідомленням.
-import createHttpError from 'http-errors';
+// import createHttpError from 'http-errors';
 
 // Імпорт моделі користувача User
-import { User } from '../models/user.js';
-
+// import { User } from '../models/user.js';
 
 // ===========================================================================================
 // GET /users/me
