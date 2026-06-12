@@ -4,11 +4,12 @@
 
 // Express Router — об'єкт, який дозволяє групувати маршрути та їх обробники у логічні блоки.
 import { Router } from 'express';
-
+import { addToFavorites } from '../controllers/favoriteController.js';
+import { deleteToFavorites } from '../controllers/favoriteController.js';
 // Імпорт контролерів
 
 // Імпорт middleware перевірки аутентифікації
-// import { authenticate } from '../middleware/authenticate.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 // Створення роутеру
 const router = Router();
@@ -18,6 +19,17 @@ const router = Router();
 // -------------------------------------------------------------------------------------------
 
 // ===========================================================================================
+
+// ===========================================================================================
+// POST /:id/favorite - Пошук рецептів за категорією, інгредієнтом, входженням пошукового значення в назву рецепту (з урахуванням логіки пагінації)
+// -------------------------------------------------------------------------------------------
+router.post('/:id/favorite', authenticate, addToFavorites);
+router.delete('/:id/favorite', authenticate, deleteToFavorites);
+// ===========================================================================================
+
+
+
+
 
 // Експорт роутера
 export default router;
