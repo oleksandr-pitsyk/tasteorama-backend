@@ -2,9 +2,12 @@
 // Функція для підключення до бази даних MongoDB за допомогою бібліотеки Mongoose.
 import mongoose from 'mongoose';
 
-// Імпорт моделі за схемою
+// Імпорт моделів за схемою
 // *****************************************************
-// import { Note } from '../models/note.js';
+import { Category } from '../models/category.js';
+import { Ingredient } from '../models/ingredient.js';
+import { Recipe } from '../models/recipe.js';
+import { User } from '../models/user.js';
 
 export const connectMongoDB = async () => {
   try {
@@ -21,7 +24,10 @@ export const connectMongoDB = async () => {
     //    створить відсутні індекси;
     //    видалить зайві.
     // *****************************************************
-    // await Note.syncIndexes();
+    await Category.syncIndexes();
+    await Ingredient.syncIndexes();
+    await Recipe.syncIndexes();
+    await User.syncIndexes();
 
     // у разі успіху виводимо повідомлення, що підключення встановлено
     console.log('✅ MongoDB connection established successfully');

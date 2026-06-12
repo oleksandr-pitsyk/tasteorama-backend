@@ -5,7 +5,7 @@
 // Імпорт Schema та model
 import { Schema, model } from 'mongoose';
 
-//  CСхема для моделі User із такими властивостями:
+//  Cхема для моделі User із такими властивостями:
 //    username — рядок, не обов’язкове поле, з параметром trim: true;
 //    email — рядок, унікальне, обов’язкове, з параметром trim: true;
 //    password — рядок, обов’язкове, мінімальна довжина — 8 символів.
@@ -54,6 +54,10 @@ userSchema.methods.toJSON = function () {
   delete obj.password;
   return obj;
 };
+
+// Индексація в моделі
+//    - по назві, сортування за зростанням
+// userSchema.index({ name: 1 });
 
 // Створюємо модель згідно схеми
 export const User = model('User', userSchema);
