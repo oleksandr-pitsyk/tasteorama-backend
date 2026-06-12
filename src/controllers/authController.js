@@ -6,19 +6,19 @@
 
 // Імпорт функції для створення помилок з пакету http-errors.
 // Він дозволяє створювати помилки з потрібним статусом і повідомленням.
-import createHttpError from 'http-errors';
+// import createHttpError from 'http-errors';
 
 // Імпорт моделі користувача User
-import { User } from '../models/user.js';
+// import { User } from '../models/user.js';
 
 // Імпорт моделі сесії Session
-import { Session } from '../models/session.js';
+// import { Session } from '../models/session.js';
 
 // Імпорт бібліотеки хешування паролів
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 
 // Імпорт функції створення сесії
-import { createSession, setSessionCookies } from '../services/auth.js';
+// import { createSession, setSessionCookies } from '../services/auth.js';
 
 // =======================================================================================
 // POST /auth/register - Реєстрація нового користувача.

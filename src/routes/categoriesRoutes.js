@@ -8,7 +8,7 @@ import { Router } from 'express';
 // Імпорт контролерів
 
 // Імпорт middleware перевірки аутентифікації
-import { authenticate } from '../middleware/authenticate.js';
+// import { authenticate } from '../middleware/authenticate.js';
 
 // Створення роутеру
 const router = Router();
