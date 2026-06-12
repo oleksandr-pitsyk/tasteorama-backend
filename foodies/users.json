@@ -1,31 +1,32 @@
-[{
-  "_id": {
-    "$oid": "64c8d958249fae54bae90bb9"
+[
+  {
+    "_id": {
+      "$oid": "64c8d958249fae54bae90bb9"
+    },
+    "name": "GoIT",
+    "email": "goit@gmail.com",
+    "password": "$2b$10$9sH8n7mLh1uXo5l3aZt7uQp6j8v9w0x1y2z3a4b5c6d7e8f9g0h",
+    "favorites": [],
+    "avatar": null
   },
-  "name": "GoIT",
-  "avatar": null,
-  "email": "goit@gmail.com",
-  "followers": [],
-  "following": []
-},
-{
-  "_id": {
-    "$oid": "64c8d958249fae54bae90bb8"
+  {
+    "_id": {
+      "$oid": "64c8d958249fae54bae90bb8"
+    },
+    "name": "Foodies user",
+    "password": "$2b$10$9sH8n7mLh1uXo5l3aZt7uQp6j8v9w0x1y2z3a4b5c6d7e8f9g0h",
+    "email": "user@gmail.com",
+    "favorites": [],
+    "avatar": null
   },
-  "name": "Foodies user",
-  "avatar": null,
-  "email": "user@gmail.com",
-  "followers": [],
-  "following": []
-},
-{
-  "_id": {
-    "$oid": "64c8d958249fae54bae90bb7"
-  },
-  "name": "Larry Pageim",
-  "avatar": null,
-  "email": "larry@gmail.com",
-  "followers": [],
-  "following": []
-}
+  {
+    "_id": {
+      "$oid": "64c8d958249fae54bae90bb7"
+    },
+    "name": "Larry Pageim",
+    "password": "$2b$10$9sH8n7mLh1uXo5l3aZt7uQp6j8v9w0x1y2z3a4b5c6d7e8f9g0h",
+    "email": "larry@gmail.com",
+    "favorites": [],
+    "avatar": null
+  }
 ]
