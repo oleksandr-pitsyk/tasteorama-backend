@@ -27,6 +27,14 @@ const userSchema = new Schema(
       required: true, // поле обов'язкове для заповнення
       trim: true, // прибирає пробіли на початку та в кінці рядка
     },
+    favorites: [
+      {
+        recipeId: {
+          type: Schema.Types.ObjectId,
+          ref: 'Recipe', // поле recipeId посилається на документ у колекції recipes.
+        },
+      },
+    ],
     avatar: {
       type: String, // тип - рядок
       required: false, // поле НЕ обов'язкове для заповнення
@@ -57,7 +65,7 @@ userSchema.methods.toJSON = function () {
 
 // Индексація в моделі
 //    - по назві, сортування за зростанням
-// userSchema.index({ name: 1 });
+userSchema.index({ name: 1 });
 
 // Створюємо модель згідно схеми
 export const User = model('User', userSchema);
