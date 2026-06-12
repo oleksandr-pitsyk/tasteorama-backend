@@ -6,7 +6,6 @@
 import { Router } from 'express';
 
 // Імпорт контролерів
-import { updateUserAvatar } from '../controllers/userController.js';
 
 // Імпорт middleware перевірки аутентифікації
 import { authenticate } from '../middleware/authenticate.js';
