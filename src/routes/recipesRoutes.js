@@ -11,6 +11,8 @@ import { celebrate } from 'celebrate';
 // Імпорт схем валідації
 import { createRecipeSchema } from '../validations/recipeValidation.js';
 
+import { addToFavorites } from '../controllers/favoriteController.js';
+import { deleteToFavorites } from '../controllers/favoriteController.js';
 // Імпорт контролерів
 import { createRecipe } from '../controllers/createRecipeController.js';
 
@@ -33,6 +35,12 @@ const router = Router();
 // POST /recipes - Створення власного рецепту (приватний маршрут)
 // -------------------------------------------------------------------------------------------
 router.post('/', authenticate, upload.single('thumb'), celebrate(createRecipeSchema), createRecipe);
+// ===========================================================================================
+
+// POST /:id/favorite - Пошук рецептів за категорією, інгредієнтом, входженням пошукового значення в назву рецепту (з урахуванням логіки пагінації)
+// -------------------------------------------------------------------------------------------
+router.post('/:id/favorite', authenticate, addToFavorites);
+router.delete('/:id/favorite', authenticate, deleteToFavorites);
 // ===========================================================================================
 
 // Експорт роутера
