@@ -12,7 +12,7 @@ import { Schema, model } from 'mongoose';
 
 const userSchema = new Schema(
   {
-    username: {
+    name: {
       type: String, // тип - рядок
       trim: true, // прибирає пробіли на початку та в кінці рядка
     },
@@ -25,6 +25,7 @@ const userSchema = new Schema(
     password: {
       type: String, // тип - рядок
       required: true, // поле обов'язкове для заповнення
+      trim: true, // прибирає пробіли на початку та в кінці рядка
     },
     avatar: {
       type: String, // тип - рядок
@@ -41,8 +42,8 @@ const userSchema = new Schema(
 // За замовчуванням імя користувача буде дорівнювати email користувача.
 // Для цього ми використовуємо pre-hook Schema.pre("save"), який виконується перед збереженням користувача.
 userSchema.pre('save', async function () {
-  if (!this.username) {
-    this.username = this.email;
+  if (!this.name) {
+    this.name = this.email;
   }
 });
 
