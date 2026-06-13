@@ -22,6 +22,8 @@ import { authenticate } from '../middleware/authenticate.js';
 // Імпорт multer для завантаження файлів
 import { upload } from '../middleware/multer.js';
 
+import { getFavoriteRecipes } from '../controllers/favoriteRecipesController.js';
+
 // Створення роутеру
 const router = Router();
 
@@ -44,6 +46,7 @@ router.post(
 
 // POST /:id/favorite - Пошук рецептів за категорією, інгредієнтом, входженням пошукового значення в назву рецепту (з урахуванням логіки пагінації)
 // -------------------------------------------------------------------------------------------
+router.get('/recipes/favorites', authenticate, getFavoriteRecipes);
 router.post('/recipes/favorites/:id', authenticate, addToFavorites);
 router.delete('/recipes/favorites/:id', authenticate, deleteToFavorites);
 // ===========================================================================================
