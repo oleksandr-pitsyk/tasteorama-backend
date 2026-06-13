@@ -14,18 +14,19 @@ import { getRecipesSchema, createRecipeSchema } from '../validations/recipeValid
 // Імпорт контролерів
 import { getAllRecipes } from '../controllers/recipesSearchController.js';
 import { getRecipeById } from '../controllers/recipesDetailsController.js';
+
+import { createRecipe } from '../controllers/createRecipeController.js';
+
 import { addFavorites } from '../controllers/recipesFavoritesAddController.js';
 import { deleteFavorites } from '../controllers/recipesFavoritesDeleteController.js';
 
-import { createRecipe } from '../controllers/createRecipeController.js';
+import { getFavoriteRecipes } from '../controllers/recipesFavoritesController.js';
 
 // Імпорт middleware перевірки аутентифікації
 import { authenticate } from '../middleware/authenticate.js';
 
 // Імпорт multer для завантаження файлів
 import { upload } from '../middleware/multer.js';
-
-import { getFavoriteRecipes } from '../controllers/favoriteRecipesController.js';
 
 // Створення роутеру
 const router = Router();
@@ -67,13 +68,12 @@ router.post(
   celebrate(createRecipeSchema),
   createRecipe,
 );
-// ===========================================================================================
 
-// POST /:id/favorite - Пошук рецептів за категорією, інгредієнтом, входженням пошукового значення в назву рецепту (з урахуванням логіки пагінації)
+// ===========================================================================================
+// GET /recipes/favorites - Отримання улюблених рецептів користувача
+// Приватний маршрут
 // -------------------------------------------------------------------------------------------
 router.get('/recipes/favorites', authenticate, getFavoriteRecipes);
-router.post('/recipes/favorites/:id', authenticate, addToFavorites);
-router.delete('/recipes/favorites/:id', authenticate, deleteToFavorites);
 // ===========================================================================================
 
 // Експорт роутера
