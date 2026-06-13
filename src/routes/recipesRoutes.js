@@ -13,6 +13,7 @@ import { getRecipesSchema, createRecipeSchema } from '../validations/recipeValid
 
 // Імпорт контролерів
 import { getAllRecipes } from '../controllers/recipesSearchController.js';
+import { getRecipeById } from '../controllers/recipesDetailsController.js';
 import { createRecipe } from '../controllers/createRecipeController.js';
 import { addToFavorites } from '../controllers/favoriteController.js';
 import { deleteToFavorites } from '../controllers/favoriteController.js';
@@ -31,6 +32,12 @@ const router = Router();
 // Публічний маршрут
 // ===========================================================================================
 router.get('/recipes', celebrate(getRecipesSchema), getAllRecipes);
+
+// ===========================================================================================
+// GET /recipes/:recipeId - отримання детальної інформації про рецепт за його id
+// Публічний маршрут
+// ===========================================================================================
+router.get('/recipes/:recipeId', getRecipeById);
 
 // ===========================================================================================
 // POST /recipes - Створення власного рецепту (приватний маршрут)
