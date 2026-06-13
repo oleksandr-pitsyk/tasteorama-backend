@@ -45,3 +45,13 @@ export const createRecipeSchema = {
     }).required(),
   }),
 };
+
+export const getRecipesSchema = {
+  [Segments.QUERY]: Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    perPage: Joi.number().integer().min(5).max(20).default(12),
+    category: Joi.string(),
+    ingredients: Joi.string(),
+    search: Joi.string().trim().allow(''),
+  }),
+};
