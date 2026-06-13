@@ -1,0 +1,725 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Tasteorama API",
+    "description": "Beautiful and practical API reference for Tasteorama backend.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Tasteorama Team"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Register, login, and logout flows."
+    },
+    {
+      "name": "Categories",
+      "description": "Recipe category catalog for browsing."
+    },
+    {
+      "name": "Ingredients",
+      "description": "Ingredient catalog used by recipes."
+    },
+    {
+      "name": "Recipes",
+      "description": "Create and manage custom recipes."
+    },
+    {
+      "name": "Favorites",
+      "description": "Save and remove recipes in favorites."
+    }
+  ],
+  "securityDefinitions": {
+    "SessionCookie": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Cookie",
+      "description": "Cookie header with both tokens: sessionId=<value>; accessToken=<value>"
+    }
+  },
+  "definitions": {
+    "RegisterRequest": {
+      "type": "object",
+      "required": ["name", "email", "password"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Sofiia"
+        },
+        "email": {
+          "type": "string",
+          "example": "sofiia@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "StrongPass123"
+        }
+      }
+    },
+    "LoginRequest": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "sofiia@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "StrongPass123"
+        }
+      }
+    },
+    "RecipeIngredient": {
+      "type": "object",
+      "required": ["id", "measure"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "64f1234567890abcdef1234"
+        },
+        "measure": {
+          "type": "string",
+          "example": "200g"
+        }
+      }
+    },
+    "UserResponse": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "686f6e9ac1d1a4f95c0ea111"
+        },
+        "name": {
+          "type": "string",
+          "example": "Sofiia"
+        },
+        "email": {
+          "type": "string",
+          "example": "sofiia@example.com"
+        },
+        "avatar": {
+          "type": "string",
+          "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+        },
+        "favorites": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "recipeId": {
+                "type": "string",
+                "example": "64f1234567890abcdef1234"
+              }
+            }
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2026-06-13T10:15:00.000Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2026-06-13T10:15:00.000Z"
+        }
+      }
+    },
+    "CategoryItem": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "686f6e9ac1d1a4f95c0ea211"
+        },
+        "name": {
+          "type": "string",
+          "example": "Chicken"
+        }
+      }
+    },
+    "IngredientItem": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "686f6e9ac1d1a4f95c0ea311"
+        },
+        "name": {
+          "type": "string",
+          "example": "Tomato"
+        },
+        "desc": {
+          "type": "string",
+          "example": "Fresh red tomato"
+        },
+        "img": {
+          "type": "string",
+          "example": "https://example.com/images/tomato.png"
+        }
+      }
+    },
+    "CreateRecipeRequestJson": {
+      "type": "object",
+      "required": [
+        "title",
+        "category",
+        "area",
+        "instructions",
+        "description",
+        "time",
+        "ingredients"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Herb Chicken Bowl"
+        },
+        "category": {
+          "type": "string",
+          "example": "Chicken"
+        },
+        "area": {
+          "type": "string",
+          "example": "Ukrainian"
+        },
+        "instructions": {
+          "type": "string",
+          "example": "Cook chicken, slice vegetables, combine and serve."
+        },
+        "description": {
+          "type": "string",
+          "example": "Protein-rich bowl with fresh herbs and lemon dressing."
+        },
+        "thumb": {
+          "type": "string",
+          "example": "https://example.com/images/chicken-bowl.jpg"
+        },
+        "time": {
+          "type": "string",
+          "example": "30"
+        },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecipeIngredient"
+          }
+        }
+      }
+    },
+    "RecipeResponse": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "686f6e9ac1d1a4f95c0ea411"
+        },
+        "title": {
+          "type": "string",
+          "example": "Herb Chicken Bowl"
+        },
+        "category": {
+          "type": "string",
+          "example": "Chicken"
+        },
+        "owner": {
+          "type": "string",
+          "example": "686f6e9ac1d1a4f95c0ea111"
+        },
+        "area": {
+          "type": "string",
+          "example": "Ukrainian"
+        },
+        "instructions": {
+          "type": "string",
+          "example": "Cook chicken, slice vegetables, combine and serve."
+        },
+        "description": {
+          "type": "string",
+          "example": "Protein-rich bowl with fresh herbs and lemon dressing."
+        },
+        "thumb": {
+          "type": "string",
+          "example": "https://example.com/images/chicken-bowl.jpg"
+        },
+        "time": {
+          "type": "string",
+          "example": "30"
+        },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecipeIngredient"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2026-06-13T10:20:00.000Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2026-06-13T10:20:00.000Z"
+        }
+      }
+    },
+    "CreateRecipeSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Recipe created successfully"
+        },
+        "recipe": {
+          "$ref": "#/definitions/RecipeResponse"
+        }
+      }
+    },
+    "FavoriteSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Recipe added to favorites"
+        }
+      }
+    },
+    "ApiError": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 401
+        },
+        "message": {
+          "type": "string",
+          "example": "Missing access token"
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Create a new account",
+        "description": "Registers a new user and prepares account for authenticated actions.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User successfully registered",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            },
+            "examples": {
+              "application/json": {
+                "_id": "686f6e9ac1d1a4f95c0ea111",
+                "name": "Sofiia",
+                "email": "sofiia@example.com",
+                "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
+                "favorites": [],
+                "createdAt": "2026-06-13T10:15:00.000Z",
+                "updatedAt": "2026-06-13T10:15:00.000Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          },
+          "409": {
+            "description": "Email already in use",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign in",
+        "description": "Authenticates user and returns session cookies (sessionId, accessToken).",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User authenticated",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            },
+            "examples": {
+              "application/json": {
+                "_id": "686f6e9ac1d1a4f95c0ea111",
+                "name": "Sofiia",
+                "email": "sofiia@example.com",
+                "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
+                "favorites": [
+                  {
+                    "recipeId": "64f1234567890abcdef1234"
+                  }
+                ],
+                "createdAt": "2026-06-13T10:15:00.000Z",
+                "updatedAt": "2026-06-13T10:20:00.000Z"
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign out",
+        "description": "Invalidates current session for authenticated user.",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Cookie",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "example": "sessionId=abc123; accessToken=def456"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Logged out successfully"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get all categories",
+        "description": "Returns full list of recipe categories.",
+        "responses": {
+          "200": {
+            "description": "Categories list returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CategoryItem"
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "_id": "686f6e9ac1d1a4f95c0ea211",
+                  "name": "Beef"
+                },
+                {
+                  "_id": "686f6e9ac1d1a4f95c0ea212",
+                  "name": "Chicken"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/ingredients": {
+      "get": {
+        "tags": ["Ingredients"],
+        "summary": "Get all ingredients",
+        "description": "Returns ingredient catalog available for recipes.",
+        "responses": {
+          "200": {
+            "description": "Ingredients list returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/IngredientItem"
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "_id": "686f6e9ac1d1a4f95c0ea311",
+                  "name": "Tomato",
+                  "desc": "Fresh red tomato",
+                  "img": "https://example.com/images/tomato.png"
+                },
+                {
+                  "_id": "686f6e9ac1d1a4f95c0ea312",
+                  "name": "Olive oil",
+                  "desc": "Extra virgin olive oil",
+                  "img": "https://example.com/images/olive-oil.png"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/recipes/my": {
+      "post": {
+        "tags": ["Recipes"],
+        "summary": "Create your own recipe",
+        "description": "Private endpoint to create a custom recipe. Supports multipart/form-data with optional thumb file.",
+        "consumes": ["multipart/form-data"],
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Cookie",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "example": "sessionId=abc123; accessToken=def456"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "example": "Herb Chicken Bowl"
+          },
+          {
+            "name": "category",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "example": "Chicken"
+          },
+          {
+            "name": "area",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "example": "Ukrainian"
+          },
+          {
+            "name": "instructions",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "example": "Cook chicken, slice vegetables, combine and serve."
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "example": "Protein-rich bowl with fresh herbs and lemon dressing."
+          },
+          {
+            "name": "time",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "example": "30"
+          },
+          {
+            "name": "ingredients",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "JSON string with ingredients array",
+            "example": "[{\"id\":\"64f1234567890abcdef1234\",\"measure\":\"200g\"}]"
+          },
+          {
+            "name": "thumb",
+            "in": "formData",
+            "required": false,
+            "type": "file",
+            "description": "Recipe image file"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Recipe created",
+            "schema": {
+              "$ref": "#/definitions/CreateRecipeSuccessResponse"
+            },
+            "examples": {
+              "application/json": {
+                "message": "Recipe created successfully",
+                "recipe": {
+                  "_id": "686f6e9ac1d1a4f95c0ea411",
+                  "title": "Herb Chicken Bowl",
+                  "category": "Chicken",
+                  "owner": "686f6e9ac1d1a4f95c0ea111",
+                  "area": "Ukrainian",
+                  "instructions": "Cook chicken, slice vegetables, combine and serve.",
+                  "description": "Protein-rich bowl with fresh herbs and lemon dressing.",
+                  "thumb": "https://example.com/images/chicken-bowl.jpg",
+                  "time": "30",
+                  "ingredients": [
+                    {
+                      "id": "64f1234567890abcdef1234",
+                      "measure": "200g"
+                    }
+                  ],
+                  "createdAt": "2026-06-13T10:20:00.000Z",
+                  "updatedAt": "2026-06-13T10:20:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    },
+    "/recipes/favorites/{id}": {
+      "post": {
+        "tags": ["Favorites"],
+        "summary": "Add recipe to favorites",
+        "description": "Adds selected recipe to authenticated user's favorites.",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Cookie",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "example": "sessionId=abc123; accessToken=def456"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "example": "64f1234567890abcdef1234"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recipe added to favorites",
+            "schema": {
+              "$ref": "#/definitions/FavoriteSuccessResponse"
+            },
+            "examples": {
+              "application/json": {
+                "message": "Recipe added to favorites"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          },
+          "404": {
+            "description": "Recipe not found",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Favorites"],
+        "summary": "Remove recipe from favorites",
+        "description": "Removes selected recipe from authenticated user's favorites.",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Cookie",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "example": "sessionId=abc123; accessToken=def456"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "example": "64f1234567890abcdef1234"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recipe removed from favorites",
+            "schema": {
+              "$ref": "#/definitions/FavoriteSuccessResponse"
+            },
+            "examples": {
+              "application/json": {
+                "message": "Recipe removed from favorites"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          },
+          "404": {
+            "description": "Recipe not found",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    }
+  }
+}
