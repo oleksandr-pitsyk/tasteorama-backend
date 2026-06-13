@@ -8,6 +8,9 @@ import { Router } from 'express';
 // Імпорт бібліотеки валідації
 import { celebrate } from 'celebrate';
 
+// Імпорт middleware перевірки аутентифікації
+import { authenticate } from '../middleware/authenticate.js';
+
 // Імпорт схем валідації
 import { registerUserSchema, loginUserSchema } from '../validations/authValidation.js';
 
@@ -27,7 +30,7 @@ router.post('/auth/login', celebrate(loginUserSchema), loginUser);
 
 // POST /auth/logout - Виход користувача із системи.
 // ==========================================================================================
-router.post('/auth/logout', logoutUser);
+router.post('/auth/logout', authenticate, logoutUser);
 
 // Експорт роутера
 export default router;

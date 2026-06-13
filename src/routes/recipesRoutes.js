@@ -34,13 +34,19 @@ const router = Router();
 // ===========================================================================================
 // POST /recipes - Створення власного рецепту (приватний маршрут)
 // -------------------------------------------------------------------------------------------
-router.post('/', authenticate, upload.single('thumb'), celebrate(createRecipeSchema), createRecipe);
+router.post(
+  '/recipes/my',
+  authenticate,
+  upload.single('thumb'),
+  celebrate(createRecipeSchema),
+  createRecipe,
+);
 // ===========================================================================================
 
 // POST /:id/favorite - Пошук рецептів за категорією, інгредієнтом, входженням пошукового значення в назву рецепту (з урахуванням логіки пагінації)
 // -------------------------------------------------------------------------------------------
-router.post('/:id/favorite', authenticate, addToFavorites);
-router.delete('/:id/favorite', authenticate, deleteToFavorites);
+router.post('/recipes/favorites/:id', authenticate, addToFavorites);
+router.delete('/recipes/favorites/:id', authenticate, deleteToFavorites);
 // ===========================================================================================
 
 // Експорт роутера
