@@ -4,8 +4,9 @@
 
 // Express Router — об'єкт, який дозволяє групувати маршрути та їх обробники у логічні блоки.
 import { Router } from 'express';
-import { getCategories } from '../controllers/categoriesController.js';
+
 // Імпорт контролерів
+import { getCategories } from '../controllers/categoriesController.js';
 
 // Імпорт middleware перевірки аутентифікації
 // import { authenticate } from '../middleware/authenticate.js';

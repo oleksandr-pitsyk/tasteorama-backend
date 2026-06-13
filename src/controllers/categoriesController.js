@@ -6,21 +6,23 @@
 
 // Імпорт функції для створення помилок з пакету http-errors.
 // Він дозволяє створювати помилки з потрібним статусом і повідомленням.
-// import createHttpError from 'http-errors';
+import createHttpError from 'http-errors';
+
+// Імпорт моделі Category
 import { Category } from '../models/category.js';
+
 // ===========================================================================================
 // GET /categories - Отримання списку категорій рецептів
-// -------------------------------------------------------------------------------------------
+// ===========================================================================================
 export const getCategories = async (req, res, next) => {
-  try {
-    const categories = await Category.find().sort({ name: 1 });
+  // Пошук в колекції Category - сортування за іменем
+  const categories = await Category.find().sort({ name: 1 });
 
-    res.status(200).json({
-      status: 200,
-      message: 'List of categories',
-      data: categories,
-    });
-  } catch (error) {
-    next(error);
+  // Якщо категорій немає
+  if (!categories) {
+    throw createHttpError(204, 'No content');
   }
+
+  // Повертаємо дані зі списком категорій
+  res.status(200).json(categories);
 };
