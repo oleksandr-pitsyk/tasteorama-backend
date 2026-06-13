@@ -9,12 +9,13 @@ import { Router } from 'express';
 import { celebrate } from 'celebrate';
 
 // Імпорт схем валідації
-import { createRecipeSchema } from '../validations/recipeValidation.js';
+import { getRecipesSchema, createRecipeSchema } from '../validations/recipeValidation.js';
 
+// Імпорт контролерів
+import { getAllRecipes } from '../controllers/recipesSearchController.js';
+import { createRecipe } from '../controllers/createRecipeController.js';
 import { addToFavorites } from '../controllers/favoriteController.js';
 import { deleteToFavorites } from '../controllers/favoriteController.js';
-// Імпорт контролерів
-import { createRecipe } from '../controllers/createRecipeController.js';
 
 // Імпорт middleware перевірки аутентифікації
 import { authenticate } from '../middleware/authenticate.js';
@@ -27,8 +28,9 @@ const router = Router();
 
 // ===========================================================================================
 // GET /recipes - Пошук рецептів за категорією, інгредієнтом, входженням пошукового значення в назву рецепту (з урахуванням логіки пагінації)
-
+// Публічний маршрут
 // ===========================================================================================
+router.get('/recipes', celebrate(getRecipesSchema), getAllRecipes);
 
 // ===========================================================================================
 // POST /recipes - Створення власного рецепту (приватний маршрут)
