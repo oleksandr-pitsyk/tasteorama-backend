@@ -289,13 +289,67 @@
         }
       }
     },
-    "ApiError": {
+    "RecipesSearchResponse": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "number",
+          "example": 1
+        },
+        "perPage": {
+          "type": "number",
+          "example": 12
+        },
+        "totalItems": {
+          "type": "number",
+          "example": 47
+        },
+        "totalPages": {
+          "type": "number",
+          "example": 4
+        },
+        "recipes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecipeResponse"
+          }
+        }
+      }
+    },
+    "FavoriteRecipesResponse": {
       "type": "object",
       "properties": {
         "status": {
           "type": "number",
-          "example": 401
+          "example": 200
         },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecipeResponse"
+          }
+        },
+        "total": {
+          "type": "number",
+          "example": 12
+        },
+        "page": {
+          "type": "number",
+          "example": 1
+        },
+        "limit": {
+          "type": "number",
+          "example": 12
+        },
+        "totalPages": {
+          "type": "number",
+          "example": 1
+        }
+      }
+    },
+    "ApiError": {
+      "type": "object",
+      "properties": {
         "message": {
           "type": "string",
           "example": "Missing access token"
@@ -338,13 +392,7 @@
             }
           },
           "400": {
-            "description": "Validation failed",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
-            }
-          },
-          "409": {
-            "description": "Email already in use",
+            "description": "Validation failed or email already in use",
             "schema": {
               "$ref": "#/definitions/ApiError"
             }
@@ -494,6 +542,143 @@
         }
       }
     },
+    "/recipes": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Search recipes",
+        "description": "Public endpoint for recipe search with pagination and filters.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "example": 1
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "example": 12
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "example": "Chicken"
+          },
+          {
+            "name": "ingredients",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "example": "Tomato"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "example": "bowl"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recipes returned",
+            "schema": {
+              "$ref": "#/definitions/RecipesSearchResponse"
+            }
+          }
+        }
+      }
+    },
+    "/recipes/favorites": {
+      "get": {
+        "tags": ["Favorites"],
+        "summary": "Get favorite recipes",
+        "description": "Returns authenticated user's favorite recipes with pagination.",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Cookie",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "example": "sessionId=abc123; accessToken=def456"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "example": 1
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "example": 12
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Favorite recipes returned",
+            "schema": {
+              "$ref": "#/definitions/FavoriteRecipesResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    },
+    "/recipes/{recipeId}": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Get recipe by id",
+        "description": "Returns detailed recipe by id.",
+        "parameters": [
+          {
+            "name": "recipeId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "example": "64f1234567890abcdef1234"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recipe returned",
+            "schema": {
+              "$ref": "#/definitions/RecipeResponse"
+            }
+          },
+          "404": {
+            "description": "Recipe not found",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    },
     "/recipes/my": {
       "post": {
         "tags": ["Recipes"],
@@ -617,7 +802,7 @@
         }
       }
     },
-    "/recipes/favorites/{id}": {
+    "/recipes/favorites/{recipeId}": {
       "post": {
         "tags": ["Favorites"],
         "summary": "Add recipe to favorites",
@@ -636,7 +821,7 @@
             "example": "sessionId=abc123; accessToken=def456"
           },
           {
-            "name": "id",
+            "name": "recipeId",
             "in": "path",
             "required": true,
             "type": "string",
@@ -653,6 +838,12 @@
               "application/json": {
                 "message": "Recipe added to favorites"
               }
+            }
+          },
+          "400": {
+            "description": "Recipe already in favorites",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
             }
           },
           "401": {
@@ -687,7 +878,7 @@
             "example": "sessionId=abc123; accessToken=def456"
           },
           {
-            "name": "id",
+            "name": "recipeId",
             "in": "path",
             "required": true,
             "type": "string",
@@ -706,6 +897,12 @@
               }
             }
           },
+          "400": {
+            "description": "Recipe not in favorites",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "schema": {
@@ -713,7 +910,7 @@
             }
           },
           "404": {
-            "description": "Recipe not found",
+            "description": "Recipe not in Favorites",
             "schema": {
               "$ref": "#/definitions/ApiError"
             }
