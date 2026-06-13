@@ -10,6 +10,12 @@ import cors from 'cors';
 // Імпорт бібліотеки для парсера кук
 import cookieParser from 'cookie-parser';
 
+//! ==================ІМПОРТИ ДЛЯ SWAGGER
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
+import path from 'path';
+//! =====================================
+
 // Імпорт та налаштування пакету для читання змінних оточення з файлу .env
 import 'dotenv/config';
 // Імпорт функції для підключення до бази даних MongoDB
@@ -29,9 +35,9 @@ import { errors } from 'celebrate';
 import authRoutes from './routes/authRoutes.js';
 
 import usersRoutes from './routes/usersRoutes.js';
-import categoriesRoutes from './routes/categoriesRoutes.js';
-import ingredientsRoutes from './routes/ingredientsRoutes.js';
-import recipesRoutes from './routes/recipesRoutes.js';
+import categories from './routes/categoriesRoutes.js';
+import ingredients from './routes/ingredientsRoutes.js';
+import recipes from './routes/recipesRoutes.js';
 
 // Створення екземпляру Express-додатку
 const app = express();
@@ -69,6 +75,16 @@ app.use(
 app.use(cookieParser());
 // ===========================================================================================
 
+//! ============================== БЛОК ПІДКЛЮЧЕННЯ SWAGGER
+// автогенерує swagger-autogen
+const swaggerDocument = JSON.parse(
+  fs.readFileSync(path.resolve('./src/swagger-output.json'), 'utf-8'),
+);
+
+// маршрут документації
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//! ===================================================
+
 // ===========================================================================================
 // Маршрути - визначають, як сервер відповідає на різні HTTP-запити
 // (GET, POST, PUT, DELETE) до певних URL-шляхів.
@@ -83,16 +99,15 @@ app.use(usersRoutes);
 
 // ===========================================================================================
 // Підключення роутера з маршрутом отримання списку категорій
-app.use(categoriesRoutes);
+app.use(categories);
 
 // ===========================================================================================
 // Підключення роутера з маршрутом отримання списку інгредієнтів
-app.use(ingredientsRoutes);
+app.use(ingredients);
 
 // ===========================================================================================
 // Підключення роутера з маршрутами для роботи з рецептами
-// app.use('/api/recipes', recipesRoutes);
-app.use(recipesRoutes);
+app.use(recipes);
 
 // ===========================================================================================
 // Middleware 404 - для неіснуючих маршрутів

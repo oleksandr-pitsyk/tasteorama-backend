@@ -26,13 +26,12 @@ export const getFavoriteRecipes = async (req, res, next) => {
     const user = await User.findById(_id);
     // Якщо користувача немає - помилка
     if (!user) {
-      throw createHttpError(401, 'User not found');
+      throw createHttpError(404, 'User not found');
     }
 
     // Дістаємо масив id рецептів з favorites
     // favorites це [{ recipeId: ObjectId }]
     const favoriteIds = user.favorites.map((f) => f.recipeId);
-    console.log('favoriteIds', favoriteIds);
 
     // Знаходимо рецепти по цим id з пагінацією
     const [recipes, total] = await Promise.all([
