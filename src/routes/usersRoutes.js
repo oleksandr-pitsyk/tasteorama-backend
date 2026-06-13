@@ -6,9 +6,10 @@
 import { Router } from 'express';
 
 // Імпорт контролерів
+import { getCurrentUser } from '../controllers/usersController.js';
 
 // Імпорт middleware перевірки аутентифікації
-// import { authenticate } from '../middleware/authenticate.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 // Створення роутеру
 const router = Router();
@@ -16,6 +17,7 @@ const router = Router();
 // ===========================================================================================
 // GET /users/me - Отримання інформації про користувача
 // -------------------------------------------------------------------------------------------
+router.get('/users/me', authenticate, getCurrentUser);
 
 // ===========================================================================================
 
