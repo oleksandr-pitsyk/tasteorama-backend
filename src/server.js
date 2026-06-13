@@ -29,9 +29,9 @@ import { errors } from 'celebrate';
 import authRoutes from './routes/authRoutes.js';
 
 import usersRoutes from './routes/usersRoutes.js';
-import categories from './routes/categoriesRoutes.js';
-import ingredients from './routes/ingredientsRoutes.js';
-import recipes from './routes/recipesRoutes.js';
+import categoriesRoutes from './routes/categoriesRoutes.js';
+import ingredientsRoutes from './routes/ingredientsRoutes.js';
+import recipesRoutes from './routes/recipesRoutes.js';
 
 // Створення екземпляру Express-додатку
 const app = express();
@@ -83,15 +83,15 @@ app.use(usersRoutes);
 
 // ===========================================================================================
 // Підключення роутера з маршрутом отримання списку категорій
-app.use(categories);
+app.use(categoriesRoutes);
 
 // ===========================================================================================
 // Підключення роутера з маршрутом отримання списку інгредієнтів
-app.use(ingredients);
+app.use(ingredientsRoutes);
 
 // ===========================================================================================
 // Підключення роутера з маршрутами для роботи з рецептами
-app.use('/api/recipes', recipes);
+app.use('/api/recipes', recipesRoutes);
 
 // ===========================================================================================
 // Middleware 404 - для неіснуючих маршрутів

@@ -1,17 +1,28 @@
+// ===========================================================================================
+// Контролери інгредієнтів
+// -------------------------------------------------------------------------------------------
+// Контролери — це функції, які відповідають за обробку запитів і формування відповіді.
+// ===========================================================================================
+
+// Імпорт функції для створення помилок з пакету http-errors.
+// Він дозволяє створювати помилки з потрібним статусом і повідомленням.
+import createHttpError from 'http-errors';
+
+// Імпорт моделі користувача Ingredient
 import { Ingredient } from '../models/ingredient.js';
 
+// GET /ingredients - Отримання списку інгредієнтів
+// ==========================================================================================
 
 export const getIngredients = async (req, res, next) => {
-    try {
-        const ingredients = await Ingredient.find().sort({ name: 1 });
+  // Пошук в колекції Ingredient - сортування за іменем
+  const ingredients = await Ingredient.find().sort({ name: 1 });
 
-        res.status(200).json({
-            status: 200,
-            message: "List of ingredients",
-            data: ingredients});
+  // Якщо інгредієнтів немає
+  if (!ingredients) {
+    throw createHttpError(204, 'No content');
+  }
 
-    } catch(error){
-        console.log(error);
-        next(error);
-    }
+  // Повертаємо дані зі списком інгредієнтів
+  res.status(200).json(ingredients);
 };

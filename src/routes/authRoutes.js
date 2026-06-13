@@ -17,13 +17,16 @@ import { registerUser, loginUser, logoutUser } from '../controllers/authControll
 // Створення роутеру
 const router = Router();
 
-// POST auth/register - Реєстрація нового користувача.
+// POST /auth/register - Реєстрація нового користувача.
+// ==========================================================================================
 router.post('/auth/register', celebrate(registerUserSchema), registerUser);
 
-// POST auth/login - Логін зареєстрованого користувача (Вхід в систему).
+// POST /auth/login - Логін зареєстрованого користувача (Вхід в систему).
+// ==========================================================================================
 router.post('/auth/login', celebrate(loginUserSchema), loginUser);
 
-// POST auth/logout - Виход користувача із системи.
+// POST /auth/logout - Виход користувача із системи.
+// ==========================================================================================
 router.post('/auth/logout', logoutUser);
 
 // Експорт роутера

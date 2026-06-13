@@ -2,11 +2,18 @@
 // Маршрути для інгредієнтів
 // ==========================================================================================
 
+// Express Router — об'єкт, який дозволяє групувати маршрути та їх обробники у логічні блоки.
 import { Router } from 'express';
+
+// Імпорт контролерів
 import { getIngredients } from '../controllers/ingredientsController.js';
 
+// Створення роутеру
 const router = Router();
 
-router.get('/api/ingredients', getIngredients);
+// GET /ingredients - Отримання списку інгредієнтів
+// ==========================================================================================
+router.get('/ingredients', getIngredients);
 
+// Експорт роутера
 export default router;
