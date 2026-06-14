@@ -37,27 +37,27 @@ const router = Router();
 // GET /recipes - Пошук рецептів за категорією, інгредієнтом, входженням пошукового значення в назву рецепту (з урахуванням логіки пагінації)
 // Публічний маршрут
 // -------------------------------------------------------------------------------------------
-router.get('/recipes', celebrate(getRecipesSchema), getAllRecipes);
+router.get('/api/recipes', celebrate(getRecipesSchema), getAllRecipes);
 
 // POST /recipes/favorites/:recipeId
 // Додавання рецепту до списку улюблених
 // Приватний маршрут
 // -------------------------------------------------------------------------------------------
-router.post('/recipes/favorites/:recipeId', authenticate, addFavorites);
+router.post('/api/recipes/favorites/:recipeId', authenticate, addFavorites);
 
 // ===========================================================================================
 // DELETE /recipes/favorites/:recipeId
 // Видалення рецепту зі списку улюблених
 // Приватний маршрут
 // -------------------------------------------------------------------------------------------
-router.delete('/recipes/favorites/:recipeId', authenticate, deleteFavorites);
+router.delete('/api/recipes/favorites/:recipeId', authenticate, deleteFavorites);
 
 // ===========================================================================================
 // POST /recipes - Створення власного рецепту
 // Приватний маршрут
 // -------------------------------------------------------------------------------------------
 router.post(
-  '/recipes/my',
+  '/api/recipes/my',
   authenticate,
   upload.single('thumb'),
   celebrate(createRecipeSchema),
@@ -68,20 +68,20 @@ router.post(
 // GET - /recipes/my - Отримання власних рецептів
 // Приватний маршрут
 // -------------------------------------------------------------------------------------------
-router.get('/recipes/my', authenticate, getMyRecipes);
+router.get('/api/recipes/my', authenticate, getMyRecipes);
 
 // ===========================================================================================
 // GET /recipes/favorites - Отримання улюблених рецептів користувача
 // Приватний маршрут
 // -------------------------------------------------------------------------------------------
-router.get('/recipes/favorites', authenticate, getFavoriteRecipes);
+router.get('/api/recipes/favorites', authenticate, getFavoriteRecipes);
 // ===========================================================================================
 
 // ===========================================================================================
 // GET /recipes/:recipeId - отримання детальної інформації про рецепт за його id
 // Публічний маршрут
 // -------------------------------------------------------------------------------------------
-router.get('/recipes/:recipeId', getRecipeById);
+router.get('/api/recipes/:recipeId', getRecipeById);
 
 // ===========================================================================================
 

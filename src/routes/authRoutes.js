@@ -22,15 +22,15 @@ const router = Router();
 
 // POST /auth/register - Реєстрація нового користувача.
 // ==========================================================================================
-router.post('/auth/register', celebrate(registerUserSchema), registerUser);
+router.post('/api/auth/register', celebrate(registerUserSchema), registerUser);
 
 // POST /auth/login - Логін зареєстрованого користувача (Вхід в систему).
 // ==========================================================================================
-router.post('/auth/login', celebrate(loginUserSchema), loginUser);
+router.post('/api/auth/login', celebrate(loginUserSchema), loginUser);
 
 // POST /auth/logout - Виход користувача із системи.
 // ==========================================================================================
-router.post('/auth/logout', authenticate, logoutUser);
+router.post('/api/auth/logout', authenticate, logoutUser);
 
 // Експорт роутера
 export default router;
