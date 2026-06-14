@@ -68,7 +68,7 @@ router.post(
 // GET - /recipes/my - Отримання власних рецептів
 // Приватний маршрут
 // -------------------------------------------------------------------------------------------
-router.get('/api/recipes/my', authenticate, getMyRecipes);
+router.get('/api/recipes/my', authenticate, celebrate(getRecipesSchema), getMyRecipes);
 
 // ===========================================================================================
 // GET /recipes/favorites - Отримання улюблених рецептів користувача
