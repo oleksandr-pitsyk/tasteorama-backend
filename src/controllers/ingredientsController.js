@@ -22,7 +22,7 @@ export const getIngredients = async (req, res, next) => {
 
     // Якщо інгредієнтів немає
     if (!ingredients) {
-      throw createHttpError(204, 'No content');
+      throw createHttpError(404, 'Іngredients not found');
     }
 
     // Повертаємо дані зі списком інгредієнтів

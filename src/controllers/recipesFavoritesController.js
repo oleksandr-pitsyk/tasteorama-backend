@@ -1,5 +1,5 @@
 // ===========================================================================================
-// Контролер recipesFavoritesAddController - для отримання улюблених рецептів
+// Контролер recipesFavoritesController - для отримання списку улюблених рецептів
 // -------------------------------------------------------------------------------------------
 
 // Імпорт функції для створення помилок з пакету http-errors.
@@ -42,6 +42,11 @@ export const getFavoriteRecipes = async (req, res, next) => {
         .skip(skip)
         .limit(perPage),
     ]);
+
+    // Якщо рецепти не знайдено
+    if (totalItems === 0) {
+      throw createHttpError(404, 'Recipes not found');
+    }
 
     // Розрахунок загальної кількості сторінок (округлення вгору)
     const totalPages = Math.ceil(totalItems / perPage);

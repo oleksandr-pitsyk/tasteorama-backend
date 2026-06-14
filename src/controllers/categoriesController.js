@@ -21,7 +21,7 @@ export const getCategories = async (req, res, next) => {
 
     // Якщо категорій немає
     if (!categories) {
-      throw createHttpError(204, 'No content');
+      throw createHttpError(404, 'Categories not found');
     }
 
     // Повертаємо дані зі списком категорій
