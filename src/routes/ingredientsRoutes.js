@@ -13,7 +13,7 @@ const router = Router();
 
 // GET /ingredients - Отримання списку інгредієнтів
 // ==========================================================================================
-router.get('/ingredients', getIngredients);
+router.get('/api/ingredients', getIngredients);
 
 // Експорт роутера
 export default router;
