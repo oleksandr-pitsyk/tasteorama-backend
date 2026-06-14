@@ -33,6 +33,7 @@ export const deleteFavorites = async (req, res, next) => {
 
     // Видалення з улюблених рецепта за id
     await User.findByIdAndUpdate(_id, { $pull: { favorites: { recipeId: recipeId } } });
+
     // Повернення успішної відповіді
     res.status(200).json({ message: 'Recipe removed from favorites' });
   } catch (error) {

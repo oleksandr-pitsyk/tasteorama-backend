@@ -12,20 +12,18 @@
 // ===========================================================================================
 // GET /users/me
 // -------------------------------------------------------------------------------------------
-export const getCurrentUser = async (req, res) => {
-  // Деструктуризація інформації з запиту
-  // const { _id, name, email } = req.user;
-  // res.status(200).json({
-  //   status: 200,
-  //   data: {
-  //     _id,
-  //     name,
-  //     email,
-  //   },
-  // });
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    // Поточний користувач - з запиту
+    const user = req.user;
 
-  const user = req.user;
-
-  res.status(200).json(user);
+    // У разі вдалої обробки запиту відповідь сервера має бути зі статусом 200
+    res.status(200).json({
+      message: 'Information about the current user',
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 // ===========================================================================================

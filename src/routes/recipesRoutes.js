@@ -15,7 +15,9 @@ import { getRecipesSchema, createRecipeSchema } from '../validations/recipeValid
 import { getAllRecipes } from '../controllers/recipesSearchController.js';
 import { getRecipeById } from '../controllers/recipesDetailsController.js';
 
-import { createRecipe } from '../controllers/createRecipeController.js';
+import { createRecipe } from '../controllers/recipesMyCreateController.js';
+
+import { getMyRecipes } from '../controllers/recipesMyController.js';
 
 import { addFavorites } from '../controllers/recipesFavoritesAddController.js';
 import { deleteFavorites } from '../controllers/recipesFavoritesDeleteController.js';
@@ -61,6 +63,12 @@ router.post(
   celebrate(createRecipeSchema),
   createRecipe,
 );
+
+// ===========================================================================================
+// GET - /recipes/my - Отримання власних рецептів
+// Приватний маршрут
+// -------------------------------------------------------------------------------------------
+router.get('/recipes/my', authenticate, getMyRecipes);
 
 // ===========================================================================================
 // GET /recipes/favorites - Отримання улюблених рецептів користувача

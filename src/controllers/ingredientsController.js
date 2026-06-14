@@ -16,14 +16,21 @@ import { Ingredient } from '../models/ingredient.js';
 // ==========================================================================================
 
 export const getIngredients = async (req, res, next) => {
-  // Пошук в колекції Ingredient - сортування за іменем
-  const ingredients = await Ingredient.find().sort({ name: 1 });
+  try {
+    // Пошук в колекції Ingredient - сортування за іменем
+    const ingredients = await Ingredient.find().sort({ name: 1 });
 
-  // Якщо інгредієнтів немає
-  if (!ingredients) {
-    throw createHttpError(204, 'No content');
+    // Якщо інгредієнтів немає
+    if (!ingredients) {
+      throw createHttpError(204, 'No content');
+    }
+
+    // Повертаємо дані зі списком інгредієнтів
+    res.status(200).json({
+      message: 'List of ingredients',
+      data: ingredients,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  // Повертаємо дані зі списком інгредієнтів
-  res.status(200).json(ingredients);
 };
