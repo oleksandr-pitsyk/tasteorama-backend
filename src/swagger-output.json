@@ -31,6 +31,10 @@
       "description": "Create and manage custom recipes."
     },
     {
+      "name": "Users",
+      "description": "Current authenticated user profile."
+    },
+    {
       "name": "Favorites",
       "description": "Save and remove recipes in favorites."
     }
@@ -268,6 +272,48 @@
         }
       }
     },
+    "UserEnvelopeResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Information about the current user"
+        },
+        "data": {
+          "$ref": "#/definitions/UserResponse"
+        }
+      }
+    },
+    "CollectionEnvelopeResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "List of categories"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CategoryItem"
+          }
+        }
+      }
+    },
+    "IngredientCollectionEnvelopeResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "List of ingredients"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IngredientItem"
+          }
+        }
+      }
+    },
     "CreateRecipeSuccessResponse": {
       "type": "object",
       "properties": {
@@ -275,7 +321,7 @@
           "type": "string",
           "example": "Recipe created successfully"
         },
-        "recipe": {
+        "data": {
           "$ref": "#/definitions/RecipeResponse"
         }
       }
@@ -292,6 +338,10 @@
     "RecipesSearchResponse": {
       "type": "object",
       "properties": {
+        "message": {
+          "type": "string",
+          "example": "List of recipes"
+        },
         "page": {
           "type": "number",
           "example": 1
@@ -308,7 +358,7 @@
           "type": "number",
           "example": 4
         },
-        "recipes": {
+        "data": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/RecipeResponse"
@@ -319,31 +369,31 @@
     "FavoriteRecipesResponse": {
       "type": "object",
       "properties": {
-        "status": {
-          "type": "number",
-          "example": 200
-        },
-        "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/RecipeResponse"
-          }
-        },
-        "total": {
-          "type": "number",
-          "example": 12
+        "message": {
+          "type": "string",
+          "example": "List of favorite recipes"
         },
         "page": {
           "type": "number",
           "example": 1
         },
-        "limit": {
+        "perPage": {
+          "type": "number",
+          "example": 12
+        },
+        "totalItems": {
           "type": "number",
           "example": 12
         },
         "totalPages": {
           "type": "number",
           "example": 1
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecipeResponse"
+          }
         }
       }
     },
@@ -358,7 +408,7 @@
     }
   },
   "paths": {
-    "/auth/register": {
+    "/api/auth/register": {
       "post": {
         "tags": ["Auth"],
         "summary": "Create a new account",
@@ -377,17 +427,20 @@
           "201": {
             "description": "User successfully registered",
             "schema": {
-              "$ref": "#/definitions/UserResponse"
+              "$ref": "#/definitions/UserEnvelopeResponse"
             },
             "examples": {
               "application/json": {
-                "_id": "686f6e9ac1d1a4f95c0ea111",
-                "name": "Sofiia",
-                "email": "sofiia@example.com",
-                "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
-                "favorites": [],
-                "createdAt": "2026-06-13T10:15:00.000Z",
-                "updatedAt": "2026-06-13T10:15:00.000Z"
+                "message": "Information about the new user",
+                "data": {
+                  "_id": "686f6e9ac1d1a4f95c0ea111",
+                  "name": "Sofiia",
+                  "email": "sofiia@example.com",
+                  "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
+                  "favorites": [],
+                  "createdAt": "2026-06-13T10:15:00.000Z",
+                  "updatedAt": "2026-06-13T10:15:00.000Z"
+                }
               }
             }
           },
@@ -400,7 +453,7 @@
         }
       }
     },
-    "/auth/login": {
+    "/api/auth/login": {
       "post": {
         "tags": ["Auth"],
         "summary": "Sign in",
@@ -419,21 +472,24 @@
           "200": {
             "description": "User authenticated",
             "schema": {
-              "$ref": "#/definitions/UserResponse"
+              "$ref": "#/definitions/UserEnvelopeResponse"
             },
             "examples": {
               "application/json": {
-                "_id": "686f6e9ac1d1a4f95c0ea111",
-                "name": "Sofiia",
-                "email": "sofiia@example.com",
-                "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
-                "favorites": [
-                  {
-                    "recipeId": "64f1234567890abcdef1234"
-                  }
-                ],
-                "createdAt": "2026-06-13T10:15:00.000Z",
-                "updatedAt": "2026-06-13T10:20:00.000Z"
+                "message": "Information about the current user",
+                "data": {
+                  "_id": "686f6e9ac1d1a4f95c0ea111",
+                  "name": "Sofiia",
+                  "email": "sofiia@example.com",
+                  "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
+                  "favorites": [
+                    {
+                      "recipeId": "64f1234567890abcdef1234"
+                    }
+                  ],
+                  "createdAt": "2026-06-13T10:15:00.000Z",
+                  "updatedAt": "2026-06-13T10:20:00.000Z"
+                }
               }
             }
           },
@@ -446,7 +502,7 @@
         }
       }
     },
-    "/auth/logout": {
+    "/api/auth/logout": {
       "post": {
         "tags": ["Auth"],
         "summary": "Sign out",
@@ -478,7 +534,7 @@
         }
       }
     },
-    "/categories": {
+    "/api/categories": {
       "get": {
         "tags": ["Categories"],
         "summary": "Get all categories",
@@ -487,28 +543,28 @@
           "200": {
             "description": "Categories list returned",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/CategoryItem"
-              }
+              "$ref": "#/definitions/CollectionEnvelopeResponse"
             },
             "examples": {
-              "application/json": [
-                {
-                  "_id": "686f6e9ac1d1a4f95c0ea211",
-                  "name": "Beef"
-                },
-                {
-                  "_id": "686f6e9ac1d1a4f95c0ea212",
-                  "name": "Chicken"
-                }
-              ]
+              "application/json": {
+                "message": "List of categories",
+                "data": [
+                  {
+                    "_id": "686f6e9ac1d1a4f95c0ea211",
+                    "name": "Beef"
+                  },
+                  {
+                    "_id": "686f6e9ac1d1a4f95c0ea212",
+                    "name": "Chicken"
+                  }
+                ]
+              }
             }
           }
         }
       }
     },
-    "/ingredients": {
+    "/api/ingredients": {
       "get": {
         "tags": ["Ingredients"],
         "summary": "Get all ingredients",
@@ -517,32 +573,32 @@
           "200": {
             "description": "Ingredients list returned",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/IngredientItem"
-              }
+              "$ref": "#/definitions/IngredientCollectionEnvelopeResponse"
             },
             "examples": {
-              "application/json": [
-                {
-                  "_id": "686f6e9ac1d1a4f95c0ea311",
-                  "name": "Tomato",
-                  "desc": "Fresh red tomato",
-                  "img": "https://example.com/images/tomato.png"
-                },
-                {
-                  "_id": "686f6e9ac1d1a4f95c0ea312",
-                  "name": "Olive oil",
-                  "desc": "Extra virgin olive oil",
-                  "img": "https://example.com/images/olive-oil.png"
-                }
-              ]
+              "application/json": {
+                "message": "List of ingredients",
+                "data": [
+                  {
+                    "_id": "686f6e9ac1d1a4f95c0ea311",
+                    "name": "Tomato",
+                    "desc": "Fresh red tomato",
+                    "img": "https://example.com/images/tomato.png"
+                  },
+                  {
+                    "_id": "686f6e9ac1d1a4f95c0ea312",
+                    "name": "Olive oil",
+                    "desc": "Extra virgin olive oil",
+                    "img": "https://example.com/images/olive-oil.png"
+                  }
+                ]
+              }
             }
           }
         }
       }
     },
-    "/recipes": {
+    "/api/recipes": {
       "get": {
         "tags": ["Recipes"],
         "summary": "Search recipes",
@@ -594,7 +650,7 @@
         }
       }
     },
-    "/recipes/favorites": {
+    "/api/recipes/favorites": {
       "get": {
         "tags": ["Favorites"],
         "summary": "Get favorite recipes",
@@ -620,7 +676,7 @@
             "example": 1
           },
           {
-            "name": "limit",
+            "name": "perPage",
             "in": "query",
             "required": false,
             "type": "number",
@@ -649,7 +705,7 @@
         }
       }
     },
-    "/recipes/{recipeId}": {
+    "/api/recipes/{recipeId}": {
       "get": {
         "tags": ["Recipes"],
         "summary": "Get recipe by id",
@@ -679,7 +735,7 @@
         }
       }
     },
-    "/recipes/my": {
+    "/api/recipes/my": {
       "post": {
         "tags": ["Recipes"],
         "summary": "Create your own recipe",
@@ -765,7 +821,7 @@
             "examples": {
               "application/json": {
                 "message": "Recipe created successfully",
-                "recipe": {
+                "data": {
                   "_id": "686f6e9ac1d1a4f95c0ea411",
                   "title": "Herb Chicken Bowl",
                   "category": "Chicken",
@@ -800,9 +856,62 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Get my recipes",
+        "description": "Returns authenticated user's own recipes with pagination.",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Cookie",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "example": "sessionId=abc123; accessToken=def456"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "example": 1
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "example": 12
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "My recipes returned",
+            "schema": {
+              "$ref": "#/definitions/RecipesSearchResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          },
+          "404": {
+            "description": "Recipes not found",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
       }
     },
-    "/recipes/favorites/{recipeId}": {
+    "/api/recipes/favorites/{recipeId}": {
       "post": {
         "tags": ["Favorites"],
         "summary": "Add recipe to favorites",
@@ -911,6 +1020,55 @@
           },
           "404": {
             "description": "Recipe not in Favorites",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    },
+    "/api/users/me": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get current user",
+        "description": "Returns the authenticated user's profile.",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Cookie",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "example": "sessionId=abc123; accessToken=def456"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current user returned",
+            "schema": {
+              "$ref": "#/definitions/UserEnvelopeResponse"
+            },
+            "examples": {
+              "application/json": {
+                "message": "Information about the current user",
+                "data": {
+                  "_id": "686f6e9ac1d1a4f95c0ea111",
+                  "name": "Sofiia",
+                  "email": "sofiia@example.com",
+                  "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
+                  "favorites": [],
+                  "createdAt": "2026-06-13T10:15:00.000Z",
+                  "updatedAt": "2026-06-13T10:15:00.000Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/ApiError"
             }
