@@ -5,7 +5,7 @@
 
 // Імпорт функції для створення помилок з пакету http-errors.
 // Він дозволяє створювати помилки з потрібним статусом і повідомленням.
-// import createHttpError from 'http-errors';
+import createHttpError from 'http-errors';
 
 // Імпорт моделей
 import { Recipe } from '../models/recipe.js';
@@ -49,6 +49,11 @@ export const getAllRecipes = async (req, res, next) => {
       recipesQuery.clone().countDocuments(),
       recipesQuery.skip(skip).limit(perPage),
     ]);
+
+    // Якщо рецепти не знайдено
+    if (totalItems === 0) {
+      throw createHttpError(404, 'Recipes not found');
+    }
 
     // Розрахунок загальної кількості сторінок (округлення вгору)
     const totalPages = Math.ceil(totalItems / perPage);

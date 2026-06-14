@@ -22,13 +22,13 @@ export const deleteFavorites = async (req, res, next) => {
     const findRecipe = await Recipe.findById(recipeId);
     // Якщо в колекції немає рецепта - помилка
     if (!findRecipe) {
-      throw createHttpError(404, 'Recipe not in Favorites');
+      throw createHttpError(404, 'Recipe not found');
     }
 
     // Пошук у користувача рецепта в улюблених та перевірка наявності
     if (!req.user.favorites.some((f) => f.recipeId.toString() === recipeId)) {
       // Якщо рецепта немає у колистувача в властивості favorites
-      throw createHttpError(400, 'Recipe not in favorites');
+      throw createHttpError(404, 'Recipe not found in the favorites');
     }
 
     // Видалення з улюблених рецепта за id
