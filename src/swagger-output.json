@@ -44,7 +44,7 @@
       "type": "apiKey",
       "in": "header",
       "name": "Cookie",
-      "description": "Cookie header with both tokens: sessionId=<value>; accessToken=<value>"
+      "description": "Use /api/auth/login in this Swagger UI session. Browser cookies are stored and sent automatically for private endpoints."
     }
   },
   "definitions": {
@@ -506,19 +506,10 @@
       "post": {
         "tags": ["Auth"],
         "summary": "Sign out",
-        "description": "Invalidates current session for authenticated user.",
+        "description": "Invalidates current session for authenticated user. Login first in this Swagger UI session so cookies are sent automatically.",
         "security": [
           {
             "SessionCookie": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "Cookie",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "example": "sessionId=abc123; accessToken=def456"
           }
         ],
         "responses": {
@@ -654,20 +645,13 @@
       "get": {
         "tags": ["Favorites"],
         "summary": "Get favorite recipes",
-        "description": "Returns authenticated user's favorite recipes with pagination.",
+        "description": "Returns authenticated user's favorite recipes with pagination. Login first in this Swagger UI session so cookies are sent automatically.",
         "security": [
           {
             "SessionCookie": []
           }
         ],
         "parameters": [
-          {
-            "name": "Cookie",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "example": "sessionId=abc123; accessToken=def456"
-          },
           {
             "name": "page",
             "in": "query",
@@ -739,7 +723,7 @@
       "post": {
         "tags": ["Recipes"],
         "summary": "Create your own recipe",
-        "description": "Private endpoint to create a custom recipe. Supports multipart/form-data with optional thumb file.",
+        "description": "Private endpoint to create a custom recipe. Login first in this Swagger UI session so cookies are sent automatically. Supports multipart/form-data with optional thumb file.",
         "consumes": ["multipart/form-data"],
         "security": [
           {
@@ -747,13 +731,6 @@
           }
         ],
         "parameters": [
-          {
-            "name": "Cookie",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "example": "sessionId=abc123; accessToken=def456"
-          },
           {
             "name": "title",
             "in": "formData",
@@ -860,20 +837,13 @@
       "get": {
         "tags": ["Recipes"],
         "summary": "Get my recipes",
-        "description": "Returns authenticated user's own recipes with pagination.",
+        "description": "Returns authenticated user's own recipes with pagination. Login first in this Swagger UI session so cookies are sent automatically.",
         "security": [
           {
             "SessionCookie": []
           }
         ],
         "parameters": [
-          {
-            "name": "Cookie",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "example": "sessionId=abc123; accessToken=def456"
-          },
           {
             "name": "page",
             "in": "query",
@@ -915,20 +885,13 @@
       "post": {
         "tags": ["Favorites"],
         "summary": "Add recipe to favorites",
-        "description": "Adds selected recipe to authenticated user's favorites.",
+        "description": "Adds selected recipe to authenticated user's favorites. Login first in this Swagger UI session so cookies are sent automatically.",
         "security": [
           {
             "SessionCookie": []
           }
         ],
         "parameters": [
-          {
-            "name": "Cookie",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "example": "sessionId=abc123; accessToken=def456"
-          },
           {
             "name": "recipeId",
             "in": "path",
@@ -972,20 +935,13 @@
       "delete": {
         "tags": ["Favorites"],
         "summary": "Remove recipe from favorites",
-        "description": "Removes selected recipe from authenticated user's favorites.",
+        "description": "Removes selected recipe from authenticated user's favorites. Login first in this Swagger UI session so cookies are sent automatically.",
         "security": [
           {
             "SessionCookie": []
           }
         ],
         "parameters": [
-          {
-            "name": "Cookie",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "example": "sessionId=abc123; accessToken=def456"
-          },
           {
             "name": "recipeId",
             "in": "path",
@@ -1031,19 +987,10 @@
       "get": {
         "tags": ["Users"],
         "summary": "Get current user",
-        "description": "Returns the authenticated user's profile.",
+        "description": "Returns the authenticated user's profile. Login first in this Swagger UI session so cookies are sent automatically.",
         "security": [
           {
             "SessionCookie": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "Cookie",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "example": "sessionId=abc123; accessToken=def456"
           }
         ],
         "responses": {
