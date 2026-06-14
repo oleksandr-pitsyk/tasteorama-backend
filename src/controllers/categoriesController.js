@@ -15,14 +15,21 @@ import { Category } from '../models/category.js';
 // GET /categories - Отримання списку категорій рецептів
 // ===========================================================================================
 export const getCategories = async (req, res, next) => {
-  // Пошук в колекції Category - сортування за іменем
-  const categories = await Category.find().sort({ name: 1 });
+  try {
+    // Пошук в колекції Category - сортування за іменем
+    const categories = await Category.find().sort({ name: 1 });
 
-  // Якщо категорій немає
-  if (!categories) {
-    throw createHttpError(204, 'No content');
+    // Якщо категорій немає
+    if (!categories) {
+      throw createHttpError(204, 'No content');
+    }
+
+    // Повертаємо дані зі списком категорій
+    res.status(200).json({
+      message: 'List of categories',
+      data: categories,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  // Повертаємо дані зі списком категорій
-  res.status(200).json(categories);
 };

@@ -37,31 +37,38 @@ import { createSession, setSessionCookies } from '../services/auth.js';
 // і об’єктом створеного користувача (без пароля завдяки методу схеми toJSON) — res.status(201).json(user).
 // ---------------------------------------------------------------------------------------
 
-export const registerUser = async (req, res) => {
-  const { email, password, name } = req.body;
+export const registerUser = async (req, res, next) => {
+  try {
+    const { email, password, name } = req.body;
 
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    throw createHttpError(400, 'Email in use');
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw createHttpError(400, 'Email in use');
+    }
+
+    // Хешуємо пароль
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Створення користувача
+    const newUser = await User.create({
+      email: email,
+      name: name,
+      password: hashedPassword,
+    });
+
+    // Після реєстрації створюємо нову сесію для нового користувача.
+    const newSession = await createSession(newUser._id);
+    // Додаємо у відповідь 3 куки - Викликаємо, передаємо об'єкт відповіді та сесію
+    setSessionCookies(res, newSession);
+
+    // Відправляємо дані користувача (без пароля) у відповіді
+    res.status(201).json({
+      message: 'Information about the new user',
+      data: newUser,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  // Хешуємо пароль
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Створення користувача
-  const newUser = await User.create({
-    email: email,
-    name: name,
-    password: hashedPassword,
-  });
-
-  // Після реєстрації створюємо нову сесію для нового користувача.
-  const newSession = await createSession(newUser._id);
-  // Додаємо у відповідь 3 куки - Викликаємо, передаємо об'єкт відповіді та сесію
-  setSessionCookies(res, newSession);
-
-  // Відправляємо дані користувача (без пароля) у відповіді
-  res.status(201).json(newUser);
 };
 
 // =======================================================================================
@@ -74,31 +81,39 @@ export const registerUser = async (req, res) => {
 // Видаляє стару сесію цього користувача та створює нову (createSession) і додає кукі (setSessionCookies) до відповіді;
 // У разі вдалої обробки запиту повертає відповідь зі статусом 200 і об’єктом залогіненого користувача (без пароля завдяки методу схеми toJSON) — res.status(200).json(user).
 
-export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+export const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
 
-  // Перевіряємо чи користувач з такою поштою існує
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw createHttpError(401, 'Invalid credentials');
+    // Перевіряємо чи користувач з такою поштою існує
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw createHttpError(401, 'Invalid credentials');
+    }
+
+    // Порівнюємо хеші паролів (введеного та в БД)
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      throw createHttpError(401, 'Invalid credentials');
+    }
+
+    // Після логіну — видаляємо стару сесію (якщо була) і створюємо нову, щоб уникнути конфліктів.
+    await Session.deleteOne({ userId: user._id });
+
+    // Створюємо сесію для поточного користувача
+    const newSession = await createSession(user._id);
+    // Додаємо у відповідь 3 куки - Викликаємо, передаємо об'єкт відповіді та сесію
+    setSessionCookies(res, newSession);
+
+    // Повертаємо дані про поточного користувача
+    // У разі вдалої обробки запиту відповідь сервера має бути зі статусом 200
+    res.status(200).json({
+      message: 'Information about the current user',
+      data: user,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  // Порівнюємо хеші паролів (введеного та в БД)
-  const isValidPassword = await bcrypt.compare(password, user.password);
-  if (!isValidPassword) {
-    throw createHttpError(401, 'Invalid credentials');
-  }
-
-  // Після логіну — видаляємо стару сесію (якщо була) і створюємо нову, щоб уникнути конфліктів.
-  await Session.deleteOne({ userId: user._id });
-
-  // Створюємо сесію для поточного користувача
-  const newSession = await createSession(user._id);
-  // Додаємо у відповідь 3 куки - Викликаємо, передаємо об'єкт відповіді та сесію
-  setSessionCookies(res, newSession);
-
-  // Повертаємо дані про поточного користувача
-  res.status(200).json(user);
 };
 
 // =======================================================================================
@@ -111,18 +126,22 @@ export const loginUser = async (req, res) => {
 // Маршрут не приймає тіло запиту, усі необхідні дані (sessionId) беруться з cookies.
 // ---------------------------------------------------------------------------------------
 
-export const logoutUser = async (req, res) => {
-  // Отримуємо з запиту від фронтенда з куків - інформацію про сесію
-  const { sessionId } = req.cookies;
-  // Якщо сесія така є в куках - видаляємо запис про сесію з БД
-  if (sessionId) {
-    await Session.deleteOne({ _id: sessionId });
+export const logoutUser = async (req, res, next) => {
+  try {
+    // Отримуємо з запиту від фронтенда з куків - інформацію про сесію
+    const { sessionId } = req.cookies;
+    // Якщо сесія така є в куках - видаляємо запис про сесію з БД
+    if (sessionId) {
+      await Session.deleteOne({ _id: sessionId });
+    }
+    // Очищаєmo cookies sessionId, accessToken та refreshToken за допомогою res.clearCookie
+    res.clearCookie('sessionId');
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    // Повертає відповідь зі статусом 204(без тіла).   send()-кінець відповіді
+    res.status(204).send();
+  } catch (error) {
+    next(error);
   }
-  // Очищаєmo cookies sessionId, accessToken та refreshToken за допомогою res.clearCookie
-  res.clearCookie('sessionId');
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
-  // Повертає відповідь зі статусом 204(без тіла).   send()-кінець відповіді
-  res.status(204).send();
 };
 // =======================================================================================
