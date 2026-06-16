@@ -6,6 +6,8 @@
 
 // Імпорт функції запису файла в Cloudinary
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import createHttpError from 'http-errors';
+import { Category } from '../models/category.js';
 import * as recipesService from '../services/recipes.js';
 
 // POST /recipes
@@ -23,8 +25,15 @@ export const createRecipe = async (req, res, next) => {
         ? JSON.parse(req.body.ingredients)
         : req.body.ingredients;
 
+    const category = await Category.findById(req.body.category).select('name');
+
+    if (!category) {
+      throw createHttpError(400, 'Invalid category id');
+    }
+
     const recipe = await recipesService.createRecipe({
       ...req.body,
+      category: category.name,
       ingredients,
       thumb,
       owner: req.user._id,

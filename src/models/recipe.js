@@ -41,7 +41,8 @@ const recipeSchema = new Schema(
     },
     area: {
       type: String,
-      required: true, // робить поле обов'язковим для заповнення
+      required: false, // поле не передається у create payload
+      default: '',
       trim: true, // прибирає пробіли на початку та в кінці рядка
     },
     instructions: {
@@ -63,6 +64,12 @@ const recipeSchema = new Schema(
       type: String,
       required: true, // робить поле обов'язковим для заповнення
       trim: true, // прибирає пробіли на початку та в кінці рядка
+    },
+    calories: {
+      type: Number,
+      required: false,
+      min: 1,
+      max: 10000,
     },
     ingredients: [
       {
@@ -88,7 +95,7 @@ const recipeSchema = new Schema(
 // Индексація в моделі
 //    - за назвою, сортування за зростанням
 //    - за категорією, сортування за зростанням
-recipeSchema.index({ title: 1, category:1 });
+recipeSchema.index({ title: 1, category: 1 });
 
 // Текстовий індекс - за назвою та описом
 // text index може бути тільки один на колекцію, але він може включати кілька полів.
