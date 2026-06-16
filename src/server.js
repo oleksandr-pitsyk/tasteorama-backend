@@ -81,21 +81,34 @@ const swaggerDocument = JSON.parse(
   fs.readFileSync(path.resolve('./src/swagger-output.json'), 'utf-8'),
 );
 
-// Залізобетонне налаштування хостів
-if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
-  // Прямо прописуємо твій продакшн URL для Render
-  swaggerDocument.host = 'tasteorama-backend-jumn.onrender.com';
-  swaggerDocument.schemes = ['https']; // Використовуємо тільки безпечний HTTPS
-  swaggerDocument.basePath = '/';
-} else {
-  // Для локального розробки залишаємо роботу з localhost
-  swaggerDocument.host = `localhost:${PORT}`;
-  swaggerDocument.schemes = ['http'];
-  swaggerDocument.basePath = '/';
-}
+const buildSwaggerDocument = (req) => {
+  const forwardedProto = req.get('x-forwarded-proto')?.split(',')[0]?.trim();
+  const forwardedHost = req.get('x-forwarded-host')?.split(',')[0]?.trim();
+  const protocol = forwardedProto || req.protocol || 'http';
+  const host = forwardedHost || req.get('host') || `localhost:${PORT}`;
+
+  return {
+    ...swaggerDocument,
+    host,
+    schemes: [protocol],
+    basePath: '/',
+  };
+};
+
+app.get('/api-docs/swagger.json', (req, res) => {
+  res.json(buildSwaggerDocument(req));
+});
 
 // маршрут документації
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: '/api-docs/swagger.json',
+    },
+  }),
+);
 //! ===================================================
 
 // ===========================================================================================
