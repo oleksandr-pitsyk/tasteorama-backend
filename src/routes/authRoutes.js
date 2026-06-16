@@ -15,7 +15,12 @@ import { authenticate } from '../middleware/authenticate.js';
 import { registerUserSchema, loginUserSchema } from '../validations/authValidation.js';
 
 // Імпорт контролерів
-import { registerUser, loginUser, logoutUser } from '../controllers/authController.js';
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshUserSession,
+} from '../controllers/authController.js';
 
 // Створення роутеру
 const router = Router();
@@ -31,6 +36,10 @@ router.post('/api/auth/login', celebrate(loginUserSchema), loginUser);
 // POST /auth/logout - Виход користувача із системи.
 // ==========================================================================================
 router.post('/api/auth/logout', authenticate, logoutUser);
+
+// POST /auth/refresh - Оновлення сесії за наявності refreshToken.
+// ==========================================================================================
+router.post('/api/auth/refresh', refreshUserSession);
 
 // Експорт роутера
 export default router;

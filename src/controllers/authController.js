@@ -145,3 +145,62 @@ export const logoutUser = async (req, res, next) => {
   }
 };
 // =======================================================================================
+
+// =======================================================================================
+// POST /auth/refresh - Створення нової сесії за refreshToken.
+// ---------------------------------------------------------------------------------------
+// Пошук сесії. Перевіряємо наявність у базі сесії з переданими у cookies sessionId та refreshToken. Якщо такої сесії немає — повертаємо 401 Unauthorized.
+// Перевірка строку дії refresh-токена. Якщо термін життя refreshToken минув (refreshTokenValidUntil), повертаємо помилку 401 Unauthorized.
+// Видалення старої сесії. Поточну сесію видаляємо з бази, щоб уникнути накопичення прострочених токенів.
+// Створення нової сесії. Викликаємо функцію createSession(session.userId), яка генерує нові accessToken і refreshToken.
+// Встановлення кукі. Використовуємо setSessionCookies, щоб записати у відповідь нові cookies: accessToken (15 хвилин), refreshToken (1 день), sessionId (1 день).
+// Відповідь клієнту.Відправляємо повідомлення "Session refreshed" зі статусом 200.
+// ---------------------------------------------------------------------------------------
+
+export const refreshUserSession = async (req, res, next) => {
+  try {
+    const { sessionId, refreshToken } = req.cookies;
+
+    if (!sessionId || !refreshToken) {
+      throw createHttpError(401, 'Missing session credentials');
+    }
+
+    // 1. Знаходимо поточну сесію за id сесії та рефреш токеном
+    const session = await Session.findOne({
+      _id: sessionId,
+      refreshToken,
+    });
+
+    // 2. Якщо такої сесії нема, повертаємо помилку
+    if (!session) {
+      throw createHttpError(401, 'Session not found');
+    }
+
+    // 3. Якщо сесія існує, перевіряємо валідність рефреш токена
+    const isSessionTokenExpired = session.refreshTokenValidUntil < new Date();
+
+    // Якщо термін дії рефреш токена вийшов,
+    // видаляємо сесію і повертаємо помилку
+    if (isSessionTokenExpired) {
+      await session.deleteOne();
+      res.clearCookie('sessionId');
+      res.clearCookie('accessToken');
+      res.clearCookie('refreshToken');
+      throw createHttpError(401, 'Session token expired');
+    }
+
+    // 4. Якщо всі перевірки пройшли добре, видаляємо поточну сесію
+    await session.deleteOne();
+
+    // 5. Створюємо нову сесію та додаємо кукі
+    const newSession = await createSession(session.userId);
+
+    setSessionCookies(res, newSession);
+
+    res.status(200).json({
+      message: 'Session refreshed',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
