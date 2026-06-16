@@ -81,6 +81,20 @@ const swaggerDocument = JSON.parse(
   fs.readFileSync(path.resolve('./src/swagger-output.json'), 'utf-8'),
 );
 
+// У продакшні (Render) перевизначаємо host/scheme, щоб Swagger не ходив на localhost.
+const publicApiUrl = process.env.RENDER_EXTERNAL_URL ?? process.env.PUBLIC_API_URL;
+if (publicApiUrl) {
+  try {
+    const parsedUrl = new URL(publicApiUrl);
+    swaggerDocument.host = parsedUrl.host;
+    swaggerDocument.schemes = [parsedUrl.protocol.replace(':', '')];
+    swaggerDocument.basePath =
+      parsedUrl.pathname && parsedUrl.pathname !== '/' ? parsedUrl.pathname : '/';
+  } catch {
+    // Якщо URL у змінній оточення невалідний, залишаємо значення з файлу.
+  }
+}
+
 // маршрут документації
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 //! ===================================================
