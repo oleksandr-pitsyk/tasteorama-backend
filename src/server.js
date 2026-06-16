@@ -12,13 +12,11 @@ import cookieParser from 'cookie-parser';
 
 //! ==================ІМПОРТИ ДЛЯ SWAGGER
 import swaggerUi from 'swagger-ui-express';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import swaggerDocument from '../src/swagger-output.json' with { type: 'json' };
 //! =====================================
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 // Імпорт та налаштування пакету для читання змінних оточення з файлу .env
 import 'dotenv/config';
@@ -57,14 +55,7 @@ app.use(logger);
 
 // Підключення та налаштування - Helmet - для підвищення безпеки HTTP-заголовків
 // замість
-// app.use(helmet());
-// !!!
-app.use(
-  helmet({
-    contentSecurityPolicy: false, // вимикаємо CSP щоб Swagger UI працював
-  }),
-);
-// !!!
+app.use(helmet());
 
 // express.json() - для парсингу JSON. Воно автоматично парсить (розпаковує) тіло HTTP-запиту,
 // якщо воно надійшло у форматі JSON, і додає його у req.body.
@@ -86,42 +77,6 @@ app.use(
 // Парсер кук (для можливості читати cookie)
 app.use(cookieParser());
 // ===========================================================================================
-
-//! ============================== БЛОК ПІДКЛЮЧЕННЯ SWAGGER
-const swaggerDocument = JSON.parse(
-  fs.readFileSync(join(__dirname, 'swagger-output.json'), 'utf-8'),
-);
-
-const buildSwaggerDocument = (req) => {
-  const forwardedProto = req.get('x-forwarded-proto')?.split(',')[0]?.trim();
-  const forwardedHost = req.get('x-forwarded-host')?.split(',')[0]?.trim();
-  const protocol = forwardedProto || req.protocol || 'https';
-  const host = forwardedHost || req.get('host') || `localhost:${PORT}`;
-
-  return {
-    ...swaggerDocument,
-    host,
-    schemes: [protocol],
-    basePath: '/',
-  };
-};
-
-//! марштур json
-app.get('/swagger.json', (req, res) => {
-  res.json(buildSwaggerDocument(req));
-});
-
-//! Swagger UI
-app.use(
-  '/api-docs',
-  swaggerUi.serve,
-  swaggerUi.setup(undefined, {
-    swaggerOptions: {
-      url: '/swagger.json',
-    },
-  }),
-);
-//! ===================================================
 
 // ===========================================================================================
 // Маршрути - визначають, як сервер відповідає на різні HTTP-запити
@@ -145,7 +100,11 @@ app.use(ingredients);
 
 // ===========================================================================================
 // Підключення роутера з маршрутами для роботи з рецептами
-app.use(recipes);
+app.use('/api/recipes', recipes);
+
+// !!!!
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// !!!!!
 
 // ===========================================================================================
 // Middleware 404 - для неіснуючих маршрутів
