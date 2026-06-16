@@ -81,17 +81,17 @@ const swaggerDocument = JSON.parse(
   fs.readFileSync(path.resolve('./src/swagger-output.json'), 'utf-8'),
 );
 
-// Перевіряємо, чи ми на Render (production)
+// Залізобетонне налаштування хостів
 if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
-  // Повністю видаляємо хост і схеми, щоб Swagger UI динамічно брав
-  // URL поточного сайту, на якому він відкритий
-  delete swaggerDocument.host;
-  delete swaggerDocument.schemes;
+  // Прямо прописуємо твій продакшн URL для Render
+  swaggerDocument.host = 'tasteorama-backend-jumn.onrender.com';
+  swaggerDocument.schemes = ['https']; // Використовуємо тільки безпечний HTTPS
   swaggerDocument.basePath = '/';
 } else {
   // Для локального розробки залишаємо роботу з localhost
   swaggerDocument.host = `localhost:${PORT}`;
   swaggerDocument.schemes = ['http'];
+  swaggerDocument.basePath = '/';
 }
 
 // маршрут документації
