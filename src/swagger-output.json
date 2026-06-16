@@ -171,34 +171,26 @@
     },
     "CreateRecipeRequestJson": {
       "type": "object",
-      "required": [
-        "title",
-        "category",
-        "area",
-        "instructions",
-        "description",
-        "time",
-        "ingredients"
-      ],
+      "required": ["title", "category", "instructions", "description", "time", "ingredients"],
       "properties": {
         "title": {
           "type": "string",
+          "maxLength": 64,
           "example": "Herb Chicken Bowl"
         },
         "category": {
           "type": "string",
-          "example": "Chicken"
-        },
-        "area": {
-          "type": "string",
-          "example": "Ukrainian"
+          "description": "Category ObjectId",
+          "example": "6462a6cd4c3d0ddd28897f8d"
         },
         "instructions": {
           "type": "string",
+          "maxLength": 1200,
           "example": "Cook chicken, slice vegetables, combine and serve."
         },
         "description": {
           "type": "string",
+          "maxLength": 200,
           "example": "Protein-rich bowl with fresh herbs and lemon dressing."
         },
         "thumb": {
@@ -206,11 +198,21 @@
           "example": "https://example.com/images/chicken-bowl.jpg"
         },
         "time": {
-          "type": "string",
-          "example": "30"
+          "type": "number",
+          "minimum": 1,
+          "maximum": 360,
+          "example": 30
+        },
+        "calories": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10000,
+          "example": 450
         },
         "ingredients": {
           "type": "array",
+          "minItems": 2,
+          "maxItems": 16,
           "items": {
             "$ref": "#/definitions/RecipeIngredient"
           }
@@ -236,10 +238,6 @@
           "type": "string",
           "example": "686f6e9ac1d1a4f95c0ea111"
         },
-        "area": {
-          "type": "string",
-          "example": "Ukrainian"
-        },
         "instructions": {
           "type": "string",
           "example": "Cook chicken, slice vegetables, combine and serve."
@@ -255,6 +253,10 @@
         "time": {
           "type": "string",
           "example": "30"
+        },
+        "calories": {
+          "type": "number",
+          "example": 450
         },
         "ingredients": {
           "type": "array",
@@ -743,20 +745,15 @@
             "in": "formData",
             "required": true,
             "type": "string",
-            "example": "Chicken"
-          },
-          {
-            "name": "area",
-            "in": "formData",
-            "required": true,
-            "type": "string",
-            "example": "Ukrainian"
+            "description": "Category ObjectId",
+            "example": "6462a6cd4c3d0ddd28897f8d"
           },
           {
             "name": "instructions",
             "in": "formData",
             "required": true,
             "type": "string",
+            "description": "Max 1200 characters",
             "example": "Cook chicken, slice vegetables, combine and serve."
           },
           {
@@ -764,22 +761,32 @@
             "in": "formData",
             "required": true,
             "type": "string",
+            "description": "Max 200 characters",
             "example": "Protein-rich bowl with fresh herbs and lemon dressing."
           },
           {
             "name": "time",
             "in": "formData",
             "required": true,
-            "type": "string",
-            "example": "30"
+            "type": "number",
+            "description": "Integer from 1 to 360",
+            "example": 30
+          },
+          {
+            "name": "calories",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Integer from 1 to 10000",
+            "example": 450
           },
           {
             "name": "ingredients",
             "in": "formData",
             "required": true,
             "type": "string",
-            "description": "JSON string with ingredients array",
-            "example": "[{\"id\":\"64f1234567890abcdef1234\",\"measure\":\"200g\"}]"
+            "description": "JSON string with ingredients array (2..16 unique ids)",
+            "example": "[{\"id\":\"64f1234567890abcdef1234\",\"measure\":\"200g\"},{\"id\":\"64f1234567890abcdef1235\",\"measure\":\"1 tsp\"}]"
           },
           {
             "name": "thumb",
@@ -803,11 +810,11 @@
                   "title": "Herb Chicken Bowl",
                   "category": "Chicken",
                   "owner": "686f6e9ac1d1a4f95c0ea111",
-                  "area": "Ukrainian",
                   "instructions": "Cook chicken, slice vegetables, combine and serve.",
                   "description": "Protein-rich bowl with fresh herbs and lemon dressing.",
                   "thumb": "https://example.com/images/chicken-bowl.jpg",
                   "time": "30",
+                  "calories": 450,
                   "ingredients": [
                     {
                       "id": "64f1234567890abcdef1234",

@@ -5,15 +5,29 @@
 // Імпорт бібліотеки валідації
 import { Joi, Segments } from 'celebrate';
 
+const recipeIngredientSchema = Joi.object({
+  id: Joi.string().hex().length(24).required(),
+  measure: Joi.string().trim().required(),
+});
+
+const ingredientsSchema = Joi.array()
+  .items(recipeIngredientSchema)
+  .min(2)
+  .max(16)
+  .unique('id')
+  .messages({
+    'array.unique': 'Ingredients must contain unique ids',
+  });
+
 export const createRecipeSchema = {
   [Segments.BODY]: Joi.object({
-    title: Joi.string().trim().required(),
-    category: Joi.string().trim().required(),
-    area: Joi.string().trim().required(),
-    instructions: Joi.string().trim().required(),
-    description: Joi.string().trim().required(),
+    title: Joi.string().trim().max(64).required(),
+    category: Joi.string().hex().length(24).required(),
+    instructions: Joi.string().trim().max(1200).required(),
+    description: Joi.string().trim().max(200).required(),
     thumb: Joi.string().allow('').default(''),
-    time: Joi.string().required(),
+    time: Joi.number().integer().min(1).max(360).required(),
+    calories: Joi.number().integer().min(1).max(10000).optional(),
     ingredients: Joi.custom((value, helpers) => {
       // Перевірка данних, якщо прийшли як рядок (form-data) => парсимо в JSON
       if (typeof value === 'string') {
@@ -24,26 +38,17 @@ export const createRecipeSchema = {
         }
       }
 
-      // валідуємо розпарсений масив станд. Joi
-      const { error } = Joi.array()
-        .items(
-          Joi.object({
-            // + перевіряємо, чи це валідний ObjectId рядок
-            id: Joi.string().hex().length(24).required(),
-            measure: Joi.string().trim().required(),
-          }),
-        )
-        .min(1)
-        .validate(value);
+      // Валідуємо розпарсений масив з обмеженням кількості та унікальності id
+      const { error, value: validatedValue } = ingredientsSchema.validate(value);
 
       if (error) {
         return helpers.message(error.message);
       }
 
       // Повертаємо готовий/чистий масив об'єктів
-      return value;
+      return validatedValue;
     }).required(),
-  }),
+  }).unknown(true),
 };
 
 export const getRecipesSchema = {
