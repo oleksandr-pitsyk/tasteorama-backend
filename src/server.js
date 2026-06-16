@@ -106,16 +106,18 @@ const buildSwaggerDocument = (req) => {
   };
 };
 
-app.get('/api-docs/swagger.json', (req, res) => {
+//! марштур json
+app.get('/swagger.json', (req, res) => {
   res.json(buildSwaggerDocument(req));
 });
 
+//! Swagger UI
 app.use(
   '/api-docs',
   swaggerUi.serve,
   swaggerUi.setup(undefined, {
     swaggerOptions: {
-      url: '/api-docs/swagger.json',
+      url: '/swagger.json',
     },
   }),
 );
