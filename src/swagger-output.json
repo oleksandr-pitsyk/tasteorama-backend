@@ -8,9 +8,9 @@
       "name": "Tasteorama Team"
     }
   },
-  "host": "localhost:3000",
+  "host": "tasteorama-backend-jumn.onrender.com",
+  "schemes": ["https"],
   "basePath": "/",
-  "schemes": ["http"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "tags": [

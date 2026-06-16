@@ -13,8 +13,12 @@ import cookieParser from 'cookie-parser';
 //! ==================ІМПОРТИ ДЛЯ SWAGGER
 import swaggerUi from 'swagger-ui-express';
 import fs from 'fs';
-import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 //! =====================================
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Імпорт та налаштування пакету для читання змінних оточення з файлу .env
 import 'dotenv/config';
@@ -52,7 +56,15 @@ const PORT = process.env.PORT ?? 3000;
 app.use(logger);
 
 // Підключення та налаштування - Helmet - для підвищення безпеки HTTP-заголовків
-app.use(helmet());
+// замість
+// app.use(helmet());
+// !!!
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // вимикаємо CSP щоб Swagger UI працював
+  }),
+);
+// !!!
 
 // express.json() - для парсингу JSON. Воно автоматично парсить (розпаковує) тіло HTTP-запиту,
 // якщо воно надійшло у форматі JSON, і додає його у req.body.
@@ -76,15 +88,14 @@ app.use(cookieParser());
 // ===========================================================================================
 
 //! ============================== БЛОК ПІДКЛЮЧЕННЯ SWAGGER
-// автогенерує swagger-autogen
 const swaggerDocument = JSON.parse(
-  fs.readFileSync(path.resolve('./src/swagger-output.json'), 'utf-8'),
+  fs.readFileSync(join(__dirname, 'swagger-output.json'), 'utf-8'),
 );
 
 const buildSwaggerDocument = (req) => {
   const forwardedProto = req.get('x-forwarded-proto')?.split(',')[0]?.trim();
   const forwardedHost = req.get('x-forwarded-host')?.split(',')[0]?.trim();
-  const protocol = forwardedProto || req.protocol || 'http';
+  const protocol = forwardedProto || req.protocol || 'https';
   const host = forwardedHost || req.get('host') || `localhost:${PORT}`;
 
   return {
@@ -99,7 +110,6 @@ app.get('/api-docs/swagger.json', (req, res) => {
   res.json(buildSwaggerDocument(req));
 });
 
-// маршрут документації
 app.use(
   '/api-docs',
   swaggerUi.serve,
