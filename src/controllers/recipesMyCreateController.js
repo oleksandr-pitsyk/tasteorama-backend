@@ -25,10 +25,10 @@ export const createRecipe = async (req, res, next) => {
         ? JSON.parse(req.body.ingredients)
         : req.body.ingredients;
 
-    const category = await Category.findById(req.body.category).select('name');
+    const category = await Category.findOne({ name: req.body.category }).select('name');
 
     if (!category) {
-      throw createHttpError(400, 'Invalid category id');
+      throw createHttpError(400, 'Invalid category');
     }
 
     const recipe = await recipesService.createRecipe({
