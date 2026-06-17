@@ -37,9 +37,9 @@ router.post('/api/auth/login', celebrate(loginUserSchema), loginUser);
 // ==========================================================================================
 router.post('/api/auth/logout', authenticate, logoutUser);
 
-// POST /auth/refresh - Оновлення сесії за наявності refreshToken.
+// GET /auth/refresh - Оновлення сесії за наявності refreshToken.
 // ==========================================================================================
-router.post('/api/auth/refresh', refreshUserSession);
+router.get('/api/auth/refresh', refreshUserSession);
 
 // Експорт роутера
 export default router;
