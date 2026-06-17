@@ -8,7 +8,10 @@
       "name": "FS123"
     }
   },
-  "servers": [{ "url": "http://localhost:3000", "description": "LocalHost" }],
+  "servers": [
+    { "url": "https://tasteorama-backend-jumn.onrender.com", "description": "Production" },
+    { "url": "http://localhost:3000", "description": "LocalHost" }
+  ],
   "tags": [
     { "name": "Authentication", "description": "Реєстрація, вхід, оновлення сесії, вихід" },
     { "name": "Users", "description": "Профіль поточного користувача" },
