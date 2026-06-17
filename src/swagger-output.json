@@ -1,410 +1,119 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
-    "title": "Tasteorama API",
-    "description": "Beautiful and practical API reference for Tasteorama backend.",
+    "title": "Tasteorama API 🍽️",
     "version": "1.0.0",
-    "contact": {
-      "name": "Tasteorama Team"
+    "description": "Сучасний REST API для пошуку рецептів, керування інгредієнтами та персоналізованого кулінарного досвіду.",
+    "license": {
+      "name": "FS123"
     }
   },
-  "host": "tasteorama-backend-jumn.onrender.com",
-  "schemes": ["https"],
-  "basePath": "/",
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "servers": [{ "url": "http://localhost:3000", "description": "LocalHost" }],
   "tags": [
-    {
-      "name": "Auth",
-      "description": "Register, login, and logout flows."
-    },
-    {
-      "name": "Categories",
-      "description": "Recipe category catalog for browsing."
-    },
-    {
-      "name": "Ingredients",
-      "description": "Ingredient catalog used by recipes."
-    },
-    {
-      "name": "Recipes",
-      "description": "Create and manage custom recipes."
-    },
-    {
-      "name": "Users",
-      "description": "Current authenticated user profile."
-    },
-    {
-      "name": "Favorites",
-      "description": "Save and remove recipes in favorites."
-    }
+    { "name": "Authentication", "description": "Реєстрація, вхід, оновлення сесії, вихід" },
+    { "name": "Users", "description": "Профіль поточного користувача" },
+    { "name": "Recipes", "description": "Перегляд та створення рецептів" },
+    { "name": "Favorites", "description": "Управління улюбленими рецептами" },
+    { "name": "My Recipes", "description": "Рецепти поточного користувача" },
+    { "name": "Categories", "description": "Список категорій" },
+    { "name": "Ingredients", "description": "Список інгредієнтів" }
   ],
-  "securityDefinitions": {
-    "SessionCookie": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "Cookie",
-      "description": "Use /api/auth/login in this Swagger UI session. Browser cookies are stored and sent automatically for private endpoints."
-    }
-  },
-  "definitions": {
-    "RegisterRequest": {
-      "type": "object",
-      "required": ["name", "email", "password"],
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "Sofiia"
-        },
-        "email": {
-          "type": "string",
-          "example": "sofiia@example.com"
-        },
-        "password": {
-          "type": "string",
-          "example": "StrongPass123"
-        }
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "accessToken"
       }
     },
-    "LoginRequest": {
-      "type": "object",
-      "required": ["email", "password"],
-      "properties": {
-        "email": {
-          "type": "string",
-          "example": "sofiia@example.com"
-        },
-        "password": {
-          "type": "string",
-          "example": "StrongPass123"
+    "schemas": {
+      "Category": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "507f1f77bcf86cd799439011" },
+          "name": { "type": "string", "example": "Beef" }
         }
-      }
-    },
-    "RecipeIngredient": {
-      "type": "object",
-      "required": ["id", "measure"],
-      "properties": {
-        "id": {
-          "type": "string",
-          "example": "64f1234567890abcdef1234"
-        },
-        "measure": {
-          "type": "string",
-          "example": "200g"
+      },
+      "Ingredient": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "507f1f77bcf86cd799439011" },
+          "name": { "type": "string", "example": "Chicken" },
+          "desc": { "type": "string", "example": "Fresh chicken breast" },
+          "img": { "type": "string", "example": "https://example.com/chicken.jpg" }
         }
-      }
-    },
-    "UserResponse": {
-      "type": "object",
-      "properties": {
-        "_id": {
-          "type": "string",
-          "example": "686f6e9ac1d1a4f95c0ea111"
-        },
-        "name": {
-          "type": "string",
-          "example": "Sofiia"
-        },
-        "email": {
-          "type": "string",
-          "example": "sofiia@example.com"
-        },
-        "avatar": {
-          "type": "string",
-          "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
-        },
-        "favorites": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "recipeId": {
-                "type": "string",
-                "example": "64f1234567890abcdef1234"
-              }
-            }
-          }
-        },
-        "createdAt": {
-          "type": "string",
-          "example": "2026-06-13T10:15:00.000Z"
-        },
-        "updatedAt": {
-          "type": "string",
-          "example": "2026-06-13T10:15:00.000Z"
+      },
+      "RecipeIngredient": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "507f1f77bcf86cd799439011" },
+          "measure": { "type": "string", "example": "500g" }
         }
-      }
-    },
-    "CategoryItem": {
-      "type": "object",
-      "properties": {
-        "_id": {
-          "type": "string",
-          "example": "686f6e9ac1d1a4f95c0ea211"
-        },
-        "name": {
-          "type": "string",
-          "example": "Chicken"
+      },
+      "RecipeIngredientPopulated": {
+        "type": "object",
+        "properties": {
+          "id": { "$ref": "#/components/schemas/Ingredient" },
+          "measure": { "type": "string", "example": "500g" }
         }
-      }
-    },
-    "IngredientItem": {
-      "type": "object",
-      "properties": {
-        "_id": {
-          "type": "string",
-          "example": "686f6e9ac1d1a4f95c0ea311"
-        },
-        "name": {
-          "type": "string",
-          "example": "Tomato"
-        },
-        "desc": {
-          "type": "string",
-          "example": "Fresh red tomato"
-        },
-        "img": {
-          "type": "string",
-          "example": "https://example.com/images/tomato.png"
+      },
+      "Recipe": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "507f1f77bcf86cd799439011" },
+          "title": { "type": "string", "example": "Chicken Pasta" },
+          "description": { "type": "string", "example": "Delicious Italian pasta with chicken" },
+          "time": { "type": "number", "example": 30 },
+          "calories": { "type": "number", "example": 450 },
+          "category": { "type": "string", "example": "Chicken" },
+          "ingredients": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RecipeIngredientPopulated" }
+          },
+          "instructions": { "type": "string", "example": "Cook pasta, add chicken, mix sauce" },
+          "image": { "type": "string", "example": "https://res.cloudinary.com/example/pasta.jpg" },
+          "owner": { "type": "string", "example": "507f1f77bcf86cd799439011" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         }
-      }
-    },
-    "CreateRecipeRequestJson": {
-      "type": "object",
-      "required": ["title", "category", "instructions", "description", "time", "ingredients"],
-      "properties": {
-        "title": {
-          "type": "string",
-          "maxLength": 64,
-          "example": "Herb Chicken Bowl"
-        },
-        "category": {
-          "type": "string",
-          "description": "Category ObjectId",
-          "example": "6462a6cd4c3d0ddd28897f8d"
-        },
-        "instructions": {
-          "type": "string",
-          "maxLength": 1200,
-          "example": "Cook chicken, slice vegetables, combine and serve."
-        },
-        "description": {
-          "type": "string",
-          "maxLength": 200,
-          "example": "Protein-rich bowl with fresh herbs and lemon dressing."
-        },
-        "thumb": {
-          "type": "string",
-          "example": "https://example.com/images/chicken-bowl.jpg"
-        },
-        "time": {
-          "type": "number",
-          "minimum": 1,
-          "maximum": 360,
-          "example": 30
-        },
-        "calories": {
-          "type": "number",
-          "minimum": 1,
-          "maximum": 10000,
-          "example": 450
-        },
-        "ingredients": {
-          "type": "array",
-          "minItems": 2,
-          "maxItems": 16,
-          "items": {
-            "$ref": "#/definitions/RecipeIngredient"
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "402f5f45bcf16cd539439043" },
+          "name": { "type": "string", "example": "Dan Balan" },
+          "email": { "type": "string", "format": "email", "example": "balan@example.com" },
+          "avatar": {
+            "type": "string",
+            "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+          },
+          "favorites": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["507f1f77bcf86cd799439011"]
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PaginatedRecipes": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "number", "example": 1 },
+          "perPage": { "type": "number", "example": 10 },
+          "totalRecipes": { "type": "number", "example": 42 },
+          "totalPages": { "type": "number", "example": 5 },
+          "recipes": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Recipe" }
           }
         }
-      }
-    },
-    "RecipeResponse": {
-      "type": "object",
-      "properties": {
-        "_id": {
-          "type": "string",
-          "example": "686f6e9ac1d1a4f95c0ea411"
-        },
-        "title": {
-          "type": "string",
-          "example": "Herb Chicken Bowl"
-        },
-        "category": {
-          "type": "string",
-          "example": "Chicken"
-        },
-        "owner": {
-          "type": "string",
-          "example": "686f6e9ac1d1a4f95c0ea111"
-        },
-        "instructions": {
-          "type": "string",
-          "example": "Cook chicken, slice vegetables, combine and serve."
-        },
-        "description": {
-          "type": "string",
-          "example": "Protein-rich bowl with fresh herbs and lemon dressing."
-        },
-        "thumb": {
-          "type": "string",
-          "example": "https://example.com/images/chicken-bowl.jpg"
-        },
-        "time": {
-          "type": "string",
-          "example": "30"
-        },
-        "calories": {
-          "type": "number",
-          "example": 450
-        },
-        "ingredients": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/RecipeIngredient"
-          }
-        },
-        "createdAt": {
-          "type": "string",
-          "example": "2026-06-13T10:20:00.000Z"
-        },
-        "updatedAt": {
-          "type": "string",
-          "example": "2026-06-13T10:20:00.000Z"
-        }
-      }
-    },
-    "UserEnvelopeResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "Information about the current user"
-        },
-        "data": {
-          "$ref": "#/definitions/UserResponse"
-        }
-      }
-    },
-    "CollectionEnvelopeResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "List of categories"
-        },
-        "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/CategoryItem"
-          }
-        }
-      }
-    },
-    "IngredientCollectionEnvelopeResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "List of ingredients"
-        },
-        "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/IngredientItem"
-          }
-        }
-      }
-    },
-    "CreateRecipeSuccessResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "Recipe created successfully"
-        },
-        "data": {
-          "$ref": "#/definitions/RecipeResponse"
-        }
-      }
-    },
-    "FavoriteSuccessResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "Recipe added to favorites"
-        }
-      }
-    },
-    "RecipesSearchResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "List of recipes"
-        },
-        "page": {
-          "type": "number",
-          "example": 1
-        },
-        "perPage": {
-          "type": "number",
-          "example": 12
-        },
-        "totalItems": {
-          "type": "number",
-          "example": 47
-        },
-        "totalPages": {
-          "type": "number",
-          "example": 4
-        },
-        "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/RecipeResponse"
-          }
-        }
-      }
-    },
-    "FavoriteRecipesResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "List of favorite recipes"
-        },
-        "page": {
-          "type": "number",
-          "example": 1
-        },
-        "perPage": {
-          "type": "number",
-          "example": 12
-        },
-        "totalItems": {
-          "type": "number",
-          "example": 12
-        },
-        "totalPages": {
-          "type": "number",
-          "example": 1
-        },
-        "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/RecipeResponse"
-          }
-        }
-      }
-    },
-    "ApiError": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "Missing access token"
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "number" },
+          "message": { "type": "string" }
         }
       }
     }
@@ -412,44 +121,40 @@
   "paths": {
     "/api/auth/register": {
       "post": {
-        "tags": ["Auth"],
-        "summary": "Create a new account",
-        "description": "Registers a new user and prepares account for authenticated actions.",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/RegisterRequest"
+        "tags": ["Authentication"],
+        "summary": "Реєстрація нового користувача",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password"],
+                "properties": {
+                  "name": { "type": "string", "example": "Dan Balan" },
+                  "email": { "type": "string", "format": "email", "example": "balan@example.com" },
+                  "password": { "type": "string", "minLength": 6, "example": "pa777sss" }
+                }
+              }
             }
           }
-        ],
+        },
         "responses": {
           "201": {
-            "description": "User successfully registered",
-            "schema": {
-              "$ref": "#/definitions/UserEnvelopeResponse"
-            },
-            "examples": {
+            "description": "Користувач успішно зареєстрований. Сесійні cookies встановлені.",
+            "content": {
               "application/json": {
-                "message": "Information about the new user",
-                "data": {
-                  "_id": "686f6e9ac1d1a4f95c0ea111",
-                  "name": "Sofiia",
-                  "email": "sofiia@example.com",
-                  "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
-                  "favorites": [],
-                  "createdAt": "2026-06-13T10:15:00.000Z",
-                  "updatedAt": "2026-06-13T10:15:00.000Z"
-                }
+                "schema": { "$ref": "#/components/schemas/User" }
               }
             }
           },
           "400": {
-            "description": "Validation failed or email already in use",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Email вже використовується або некоректні дані",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "status": 400, "message": "Email already in use" }
+              }
             }
           }
         }
@@ -457,48 +162,76 @@
     },
     "/api/auth/login": {
       "post": {
-        "tags": ["Auth"],
-        "summary": "Sign in",
-        "description": "Authenticates user and returns session cookies (sessionId, accessToken).",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LoginRequest"
+        "tags": ["Authentication"],
+        "summary": "Вхід в акаунт",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "baldan@example.com" },
+                  "password": { "type": "string", "example": "pa777sss" }
+                }
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "User authenticated",
-            "schema": {
-              "$ref": "#/definitions/UserEnvelopeResponse"
-            },
-            "examples": {
+            "description": "Успішний вхід. Сесійні cookies встановлені.",
+            "content": {
               "application/json": {
-                "message": "Information about the current user",
-                "data": {
-                  "_id": "686f6e9ac1d1a4f95c0ea111",
-                  "name": "Sofiia",
-                  "email": "sofiia@example.com",
-                  "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
-                  "favorites": [
-                    {
-                      "recipeId": "64f1234567890abcdef1234"
-                    }
-                  ],
-                  "createdAt": "2026-06-13T10:15:00.000Z",
-                  "updatedAt": "2026-06-13T10:20:00.000Z"
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": {
+            "description": "Невірні облікові дані",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "status": 401, "message": "Invalid credentials" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Оновлення сесії",
+        "description": "Оновлює accessToken і refreshToken через cookies. Потребує наявних cookies: sessionId, refreshToken.",
+        "responses": {
+          "200": {
+            "description": "Сесія успішно оновлена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Session refreshed" }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Invalid credentials",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Відсутні cookies або сесія закінчилась",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "examples": {
+                  "missing": {
+                    "value": { "status": 401, "message": "Missing session credentials" }
+                  },
+                  "expired": { "value": { "status": 401, "message": "Session token expired" } },
+                  "notFound": { "value": { "status": 401, "message": "Session not found" } }
+                }
+              }
             }
           }
         }
@@ -506,85 +239,43 @@
     },
     "/api/auth/logout": {
       "post": {
-        "tags": ["Auth"],
-        "summary": "Sign out",
-        "description": "Invalidates current session for authenticated user. Login first in this Swagger UI session so cookies are sent automatically.",
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
+        "tags": ["Authentication"],
+        "summary": "Вихід з акаунта",
+        "description": "Видаляє сесію та очищає cookies. Вимагає аутентифікації.",
+        "security": [{ "cookieAuth": [] }],
         "responses": {
-          "204": {
-            "description": "Logged out successfully"
-          },
+          "204": { "description": "Успішний вихід, тіло відповіді відсутнє" },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
-            }
-          }
-        }
-      }
-    },
-    "/api/categories": {
-      "get": {
-        "tags": ["Categories"],
-        "summary": "Get all categories",
-        "description": "Returns full list of recipe categories.",
-        "responses": {
-          "200": {
-            "description": "Categories list returned",
-            "schema": {
-              "$ref": "#/definitions/CollectionEnvelopeResponse"
-            },
-            "examples": {
+            "description": "Не аутентифікований",
+            "content": {
               "application/json": {
-                "message": "List of categories",
-                "data": [
-                  {
-                    "_id": "686f6e9ac1d1a4f95c0ea211",
-                    "name": "Beef"
-                  },
-                  {
-                    "_id": "686f6e9ac1d1a4f95c0ea212",
-                    "name": "Chicken"
-                  }
-                ]
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
         }
       }
     },
-    "/api/ingredients": {
+    "/api/users/me": {
       "get": {
-        "tags": ["Ingredients"],
-        "summary": "Get all ingredients",
-        "description": "Returns ingredient catalog available for recipes.",
+        "tags": ["Users"],
+        "summary": "Отримати поточного користувача",
+        "description": "Повертає інформацію про поточного авторизованого користувача без конфіденційних даних.",
+        "security": [{ "cookieAuth": [] }],
         "responses": {
           "200": {
-            "description": "Ingredients list returned",
-            "schema": {
-              "$ref": "#/definitions/IngredientCollectionEnvelopeResponse"
-            },
-            "examples": {
+            "description": "Дані поточного користувача",
+            "content": {
               "application/json": {
-                "message": "List of ingredients",
-                "data": [
-                  {
-                    "_id": "686f6e9ac1d1a4f95c0ea311",
-                    "name": "Tomato",
-                    "desc": "Fresh red tomato",
-                    "img": "https://example.com/images/tomato.png"
-                  },
-                  {
-                    "_id": "686f6e9ac1d1a4f95c0ea312",
-                    "name": "Olive oil",
-                    "desc": "Extra virgin olive oil",
-                    "img": "https://example.com/images/olive-oil.png"
-                  }
-                ]
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": {
+            "description": "Не аутентифікований",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -594,98 +285,50 @@
     "/api/recipes": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "Search recipes",
-        "description": "Public endpoint for recipe search with pagination and filters.",
+        "summary": "Отримати всі рецепти",
+        "description": "Отримання колекції рецептів із підтримкою фільтрації та пагінації.",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "required": false,
-            "type": "number",
+            "schema": { "type": "integer", "default": 1 },
             "example": 1
           },
           {
             "name": "perPage",
             "in": "query",
-            "required": false,
-            "type": "number",
+            "schema": { "type": "integer", "default": 12 },
             "example": 12
           },
           {
             "name": "category",
             "in": "query",
-            "required": false,
-            "type": "string",
-            "example": "Chicken"
+            "schema": { "type": "string" },
+            "example": "Chicken",
+            "description": "Фільтр за назвою категорії (case-insensitive)"
           },
           {
             "name": "ingredients",
             "in": "query",
-            "required": false,
-            "type": "string",
-            "example": "Tomato"
+            "schema": { "type": "string" },
+            "example": "Garlic",
+            "description": "Фільтр за назвою інгредієнта (case-insensitive)"
           },
           {
-            "name": "search",
+            "name": "keyword",
             "in": "query",
-            "required": false,
-            "type": "string",
-            "example": "bowl"
+            "schema": { "type": "string" },
+            "example": "pasta",
+            "description": "Пошук за назвою рецепта (case-insensitive)"
           }
         ],
         "responses": {
           "200": {
-            "description": "Recipes returned",
-            "schema": {
-              "$ref": "#/definitions/RecipesSearchResponse"
-            }
-          }
-        }
-      }
-    },
-    "/api/recipes/favorites": {
-      "get": {
-        "tags": ["Favorites"],
-        "summary": "Get favorite recipes",
-        "description": "Returns authenticated user's favorite recipes with pagination. Login first in this Swagger UI session so cookies are sent automatically.",
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "type": "number",
-            "example": 1
-          },
-          {
-            "name": "perPage",
-            "in": "query",
-            "required": false,
-            "type": "number",
-            "example": 12
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Favorite recipes returned",
-            "schema": {
-              "$ref": "#/definitions/FavoriteRecipesResponse"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
-            }
-          },
-          "404": {
-            "description": "User not found",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Список рецептів з пагінацією",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PaginatedRecipes" }
+              }
             }
           }
         }
@@ -694,195 +337,159 @@
     "/api/recipes/{recipeId}": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "Get recipe by id",
-        "description": "Returns detailed recipe by id.",
+        "summary": "Отримати рецепт за ID",
         "parameters": [
           {
             "name": "recipeId",
             "in": "path",
             "required": true,
-            "type": "string",
-            "example": "64f1234567890abcdef1234"
+            "schema": { "type": "string" },
+            "example": "6462a8f74c3d0ddd28897fcd"
           }
         ],
         "responses": {
           "200": {
-            "description": "Recipe returned",
-            "schema": {
-              "$ref": "#/definitions/RecipeResponse"
+            "description": "Рецепт знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "number", "example": 200 },
+                    "message": { "type": "string", "example": "Recipe retrieved successfully" },
+                    "data": { "$ref": "#/components/schemas/Recipe" }
+                  }
+                }
+              }
             }
           },
           "404": {
-            "description": "Recipe not found",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Рецепт не знайдено",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "status": 404, "message": "Recipe not found" }
+              }
             }
           }
         }
       }
     },
-    "/api/recipes/my": {
+    "/api/recipes": {
       "post": {
         "tags": ["Recipes"],
-        "summary": "Create your own recipe",
-        "description": "Private endpoint to create a custom recipe. Login first in this Swagger UI session so cookies are sent automatically. Supports multipart/form-data with optional thumb file.",
-        "consumes": ["multipart/form-data"],
-        "security": [
-          {
-            "SessionCookie": []
+        "summary": "Створити новий рецепт",
+        "description": "Створення нового рецепта доступне лише для авторизованих користувачів. Зображення завантажується у форматі multipart/form-data, а список інгредієнтів передається у вигляді JSON-рядка.",
+        "security": [{ "cookieAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "description",
+                  "time",
+                  "category",
+                  "ingredients",
+                  "instructions",
+                  "image"
+                ],
+                "properties": {
+                  "title": { "type": "string", "example": "Beef Stew" },
+                  "description": {
+                    "type": "string",
+                    "example": "Delicious beef soup with vegetables"
+                  },
+                  "time": { "type": "number", "example": 90 },
+                  "calories": { "type": "number", "example": 650 },
+                  "category": { "type": "string", "example": "6462a6cd4c3d0ddd28897f8e" },
+                  "ingredients": {
+                    "type": "string",
+                    "description": "JSON-рядок масиву інгредієнтів",
+                    "example": "[{\"id\": \"6462a8f74c3d0ddd28897aaa\", \"measure\": \"500g\"}, {\"id\": \"6462a8f74c3d0ddd28897bbb\", \"measure\": \"2 items\"}]"
+                  },
+                  "instructions": {
+                    "type": "string",
+                    "example": "Cut beef, boil water, add vegetables and cook for 90 minutes."
+                  },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
           }
-        ],
-        "parameters": [
-          {
-            "name": "title",
-            "in": "formData",
-            "required": true,
-            "type": "string",
-            "example": "Herb Chicken Bowl"
-          },
-          {
-            "name": "category",
-            "in": "formData",
-            "required": true,
-            "type": "string",
-            "description": "Category ObjectId",
-            "example": "6462a6cd4c3d0ddd28897f8d"
-          },
-          {
-            "name": "instructions",
-            "in": "formData",
-            "required": true,
-            "type": "string",
-            "description": "Max 1200 characters",
-            "example": "Cook chicken, slice vegetables, combine and serve."
-          },
-          {
-            "name": "description",
-            "in": "formData",
-            "required": true,
-            "type": "string",
-            "description": "Max 200 characters",
-            "example": "Protein-rich bowl with fresh herbs and lemon dressing."
-          },
-          {
-            "name": "time",
-            "in": "formData",
-            "required": true,
-            "type": "number",
-            "description": "Integer from 1 to 360",
-            "example": 30
-          },
-          {
-            "name": "calories",
-            "in": "formData",
-            "required": false,
-            "type": "number",
-            "description": "Integer from 1 to 10000",
-            "example": 450
-          },
-          {
-            "name": "ingredients",
-            "in": "formData",
-            "required": true,
-            "type": "string",
-            "description": "JSON string with ingredients array (2..16 unique ids)",
-            "example": "[{\"id\":\"64f1234567890abcdef1234\",\"measure\":\"200g\"},{\"id\":\"64f1234567890abcdef1235\",\"measure\":\"1 tsp\"}]"
-          },
-          {
-            "name": "thumb",
-            "in": "formData",
-            "required": false,
-            "type": "file",
-            "description": "Recipe image file"
-          }
-        ],
+        },
         "responses": {
           "201": {
-            "description": "Recipe created",
-            "schema": {
-              "$ref": "#/definitions/CreateRecipeSuccessResponse"
-            },
-            "examples": {
+            "description": "Рецепт створено",
+            "content": {
               "application/json": {
-                "message": "Recipe created successfully",
-                "data": {
-                  "_id": "686f6e9ac1d1a4f95c0ea411",
-                  "title": "Herb Chicken Bowl",
-                  "category": "Chicken",
-                  "owner": "686f6e9ac1d1a4f95c0ea111",
-                  "instructions": "Cook chicken, slice vegetables, combine and serve.",
-                  "description": "Protein-rich bowl with fresh herbs and lemon dressing.",
-                  "thumb": "https://example.com/images/chicken-bowl.jpg",
-                  "time": "30",
-                  "calories": 450,
-                  "ingredients": [
-                    {
-                      "id": "64f1234567890abcdef1234",
-                      "measure": "200g"
-                    }
-                  ],
-                  "createdAt": "2026-06-13T10:20:00.000Z",
-                  "updatedAt": "2026-06-13T10:20:00.000Z"
-                }
+                "schema": { "$ref": "#/components/schemas/Recipe" }
               }
             }
           },
           "400": {
-            "description": "Validation failed",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Відсутній файл, категорія або інгредієнти не знайдені",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "examples": {
+                  "noFile": { "value": { "status": 400, "message": "No file" } },
+                  "noCategory": { "value": { "status": 400, "message": "Category not found" } },
+                  "noIngredient": {
+                    "value": { "status": 400, "message": "One or more ingredients not found" }
+                  }
+                }
+              }
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Не аутентифікований",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
             }
           }
         }
-      },
+      }
+    },
+    "/api/recipes/favorites": {
       "get": {
-        "tags": ["Recipes"],
-        "summary": "Get my recipes",
-        "description": "Returns authenticated user's own recipes with pagination. Login first in this Swagger UI session so cookies are sent automatically.",
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "type": "number",
-            "example": 1
-          },
-          {
-            "name": "perPage",
-            "in": "query",
-            "required": false,
-            "type": "number",
-            "example": 12
-          }
-        ],
+        "tags": ["Favorites"],
+        "summary": "Отримати улюблені рецепти",
+        "description": "Повертає всі рецепти зі списку favorites поточного користувача з populated інгредієнтами.",
+        "security": [{ "cookieAuth": [] }],
         "responses": {
           "200": {
-            "description": "My recipes returned",
-            "schema": {
-              "$ref": "#/definitions/RecipesSearchResponse"
+            "description": "Список улюблених рецептів",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "number", "example": 200 },
+                    "message": {
+                      "type": "string",
+                      "example": "Favorite recipes retrieved successfully"
+                    },
+                    "total": { "type": "number", "example": 3 },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Recipe" }
+                    }
+                  }
+                }
+              }
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
-            }
-          },
-          "404": {
-            "description": "Recipes not found",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Не аутентифікований",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
             }
           }
         }
@@ -891,140 +498,172 @@
     "/api/recipes/favorites/{recipeId}": {
       "post": {
         "tags": ["Favorites"],
-        "summary": "Add recipe to favorites",
-        "description": "Adds selected recipe to authenticated user's favorites. Login first in this Swagger UI session so cookies are sent automatically.",
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
+        "summary": "Додати рецепт до улюблених",
+        "security": [{ "cookieAuth": [] }],
         "parameters": [
           {
             "name": "recipeId",
             "in": "path",
             "required": true,
-            "type": "string",
-            "example": "64f1234567890abcdef1234"
+            "schema": { "type": "string" },
+            "example": "6462a8f74c3d0ddd28897fbf"
           }
         ],
         "responses": {
           "200": {
-            "description": "Recipe added to favorites",
-            "schema": {
-              "$ref": "#/definitions/FavoriteSuccessResponse"
-            },
-            "examples": {
+            "description": "Рецепт додано до улюблених",
+            "content": {
               "application/json": {
-                "message": "Recipe added to favorites"
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "number", "example": 200 },
+                    "message": { "type": "string", "example": "Recipe added to favorites" },
+                    "data": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "Оновлений масив favorites користувача",
+                      "example": ["6462a8f74c3d0ddd28897fbf"]
+                    }
+                  }
+                }
               }
             }
           },
-          "400": {
-            "description": "Recipe already in favorites",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
-            }
-          },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Не аутентифікований",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
             }
           },
           "404": {
-            "description": "Recipe not found",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Рецепт не знайдено",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "status": 404, "message": "Recipe not found" }
+              }
             }
           }
         }
       },
       "delete": {
         "tags": ["Favorites"],
-        "summary": "Remove recipe from favorites",
-        "description": "Removes selected recipe from authenticated user's favorites. Login first in this Swagger UI session so cookies are sent automatically.",
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
+        "summary": "Видалити рецепт з улюблених",
+        "security": [{ "cookieAuth": [] }],
         "parameters": [
           {
             "name": "recipeId",
             "in": "path",
             "required": true,
-            "type": "string",
-            "example": "64f1234567890abcdef1234"
+            "schema": { "type": "string" },
+            "example": "6462a8f74c3d0ddd28897fbf"
           }
         ],
         "responses": {
           "200": {
-            "description": "Recipe removed from favorites",
-            "schema": {
-              "$ref": "#/definitions/FavoriteSuccessResponse"
-            },
-            "examples": {
+            "description": "Рецепт видалено з улюблених",
+            "content": {
               "application/json": {
-                "message": "Recipe removed from favorites"
-              }
-            }
-          },
-          "400": {
-            "description": "Recipe not in favorites",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
-            }
-          },
-          "404": {
-            "description": "Recipe not in Favorites",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
-            }
-          }
-        }
-      }
-    },
-    "/api/users/me": {
-      "get": {
-        "tags": ["Users"],
-        "summary": "Get current user",
-        "description": "Returns the authenticated user's profile. Login first in this Swagger UI session so cookies are sent automatically.",
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Current user returned",
-            "schema": {
-              "$ref": "#/definitions/UserEnvelopeResponse"
-            },
-            "examples": {
-              "application/json": {
-                "message": "Information about the current user",
-                "data": {
-                  "_id": "686f6e9ac1d1a4f95c0ea111",
-                  "name": "Sofiia",
-                  "email": "sofiia@example.com",
-                  "avatar": "https://ac.goit.global/fullstack/react/default-avatar.jpg",
-                  "favorites": [],
-                  "createdAt": "2026-06-13T10:15:00.000Z",
-                  "updatedAt": "2026-06-13T10:15:00.000Z"
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "number", "example": 200 },
+                    "message": { "type": "string", "example": "Recipe removed from favorites" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recipeId": { "type": "string", "example": "6462a8f74c3d0ddd28897fbf" }
+                      }
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/ApiError"
+            "description": "Не аутентифікований",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Рецепт або користувач не знайдено",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recipes/my": {
+      "get": {
+        "tags": ["My Recipes"],
+        "summary": "Отримання списку рецептів",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "perPage", "in": "query", "schema": { "type": "integer", "default": 12 } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список рецептів, що належать користувачу, з можливістю пагінації результатів.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PaginatedRecipes" }
+              }
+            }
+          },
+          "401": {
+            "description": "Не аутентифікований",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Отримати всі категорії",
+        "responses": {
+          "200": {
+            "description": "Список категорій",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Category" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ingredients": {
+      "get": {
+        "tags": ["Ingredients"],
+        "summary": "Отримати всі інгредієнти",
+        "responses": {
+          "200": {
+            "description": "Список інгредієнтів",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Ingredient" }
+                }
+              }
             }
           }
         }

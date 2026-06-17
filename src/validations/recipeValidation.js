@@ -21,34 +21,33 @@ const ingredientsSchema = Joi.array()
 
 export const createRecipeSchema = {
   [Segments.BODY]: Joi.object({
-    title: Joi.string().trim().max(64).required(),
-    category: Joi.string().hex().length(24).required(),
-    instructions: Joi.string().trim().max(1200).required(),
-    description: Joi.string().trim().max(200).required(),
-    thumb: Joi.string().allow('').default(''),
-    time: Joi.number().integer().min(1).max(360).required(),
+    title: Joi.string().max(64).required(),
+    description: Joi.string().max(200).required(),
+    time: Joi.number().min(1).max(360).required(),
     calories: Joi.number().integer().min(1).max(10000).optional(),
+
+    category: Joi.string().required(),
+
+    instructions: Joi.string().max(1200).required(),
+
     ingredients: Joi.custom((value, helpers) => {
-      // Перевірка данних, якщо прийшли як рядок (form-data) => парсимо в JSON
       if (typeof value === 'string') {
         try {
           value = JSON.parse(value);
         } catch {
-          return helpers.message('Ingredients must be a valid JSON string or array');
+          return helpers.message('Ingredients must be a valid JSON string');
         }
       }
 
-      // Валідуємо розпарсений масив з обмеженням кількості та унікальності id
       const { error, value: validatedValue } = ingredientsSchema.validate(value);
 
       if (error) {
         return helpers.message(error.message);
       }
 
-      // Повертаємо готовий/чистий масив об'єктів
       return validatedValue;
     }).required(),
-  }).unknown(true),
+  }),
 };
 
 export const getRecipesSchema = {
