@@ -695,8 +695,7 @@
                   "time",
                   "category",
                   "ingredients",
-                  "instructions",
-                  "image"
+                  "instructions"
                 ],
                 "properties": {
                   "title": {

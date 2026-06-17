@@ -1,10 +1,7 @@
 // ===========================================================================================
 // POST /recipes - recipesMyCreateController - Створення власного рецепту
-// -------------------------------------------------------------------------------------------
-// Контролер — функція, яка відповідає за обробку запиту і формування відповіді.
 // ===========================================================================================
 
-// Імпорт функції запису файла в Cloudinary
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import createHttpError from 'http-errors';
 import { Category } from '../models/category.js';
@@ -25,7 +22,13 @@ export const createRecipe = async (req, res, next) => {
         ? JSON.parse(req.body.ingredients)
         : req.body.ingredients;
 
-    const category = await Category.findOne({ name: req.body.category }).select('name');
+    // ВИПРАВЛЕНИЙ ПОШУК КАТЕГОРІЇ:
+    // Використовуємо trim() для видалення пробілів та $regex з 'i' для ігнорування регістру.
+    // Тепер 'chicken', 'Chicken' або ' CHICKEN ' будуть працювати однаково успішно.
+    const categoryName = req.body.category.trim();
+    const category = await Category.findOne({
+      name: { $regex: new RegExp(`^${categoryName}$`, 'i') },
+    }).select('name');
 
     if (!category) {
       throw createHttpError(400, 'Invalid category');
@@ -33,13 +36,12 @@ export const createRecipe = async (req, res, next) => {
 
     const recipe = await recipesService.createRecipe({
       ...req.body,
-      category: category.name,
+      category: category.name, // Зберігаємо чисту назву з БД
       ingredients,
       thumb,
       owner: req.user._id,
     });
 
-    // У разі вдалої обробки запиту - відповідь сервера
     res.status(201).json({
       message: 'Recipe created successfully',
       data: recipe,
