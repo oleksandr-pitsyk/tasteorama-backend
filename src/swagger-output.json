@@ -396,8 +396,7 @@
                   "time",
                   "category",
                   "ingredients",
-                  "instructions",
-                  "image"
+                  "instructions"
                 ],
                 "properties": {
                   "title": { "type": "string", "example": "Beef Stew" },
