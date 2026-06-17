@@ -462,7 +462,7 @@
       }
     },
     "/api/auth/refresh": {
-      "post": {
+      "get": {
         "tags": ["Authentication"],
         "summary": "Оновлення сесії",
         "description": "Оновлює accessToken і refreshToken через cookies. Потребує наявних cookies: sessionId, refreshToken.",
