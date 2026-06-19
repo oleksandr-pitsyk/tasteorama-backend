@@ -25,11 +25,8 @@ export const createRecipeSchema = {
     description: Joi.string().max(200).required(),
     time: Joi.number().min(1).max(360).required(),
     calories: Joi.number().integer().min(1).max(10000).optional(),
-
     category: Joi.string().required(),
-
     instructions: Joi.string().max(1200).required(),
-
     ingredients: Joi.custom((value, helpers) => {
       if (typeof value === 'string') {
         try {
@@ -38,18 +35,16 @@ export const createRecipeSchema = {
           return helpers.message('Ingredients must be a valid JSON string');
         }
       }
-
       const { error, value: validatedValue } = ingredientsSchema.validate(value);
-
       if (error) {
         return helpers.message(error.message);
       }
-
       return validatedValue;
     }).required(),
   }),
 };
 
+// Схема валідації при пошуку списку рецептів
 export const getRecipesSchema = {
   [Segments.QUERY]: Joi.object({
     page: Joi.number().integer().min(1).default(1),
@@ -59,3 +54,27 @@ export const getRecipesSchema = {
     search: Joi.string().trim().allow(''),
   }),
 };
+
+// ======================================================================================
+// ПЕРЕВІРКА валідності ID рецепта
+// ======================================================================================
+import { isValidObjectId } from 'mongoose';
+
+// Кастомний валідатор для ObjectId
+const objectIdValidator = (value, helpers) => {
+  return !isValidObjectId(value) ? helpers.message('Invalid id format') : value;
+};
+
+// Схема для перевірки параметра studentId
+export const studentIdParamSchema = {
+  [Segments.PARAMS]: Joi.object({
+    studentId: Joi.string().custom(objectIdValidator).required(),
+  }),
+};
+// Схема валідації при пошуку рецепта за id
+export const getRecipesByIdSchema = {
+  [Segments.PARAMS]: Joi.object({
+    recipeId: Joi.string().custom(objectIdValidator).required(),
+  }),
+};
+// ======================================================================================

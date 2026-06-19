@@ -18,10 +18,7 @@ export const getCurrentUser = async (req, res, next) => {
     const user = req.user;
 
     // У разі вдалої обробки запиту відповідь сервера має бути зі статусом 200
-    res.status(200).json({
-      message: 'Information about the current user',
-      data: user,
-    });
+    res.status(200).json({ user });
   } catch (error) {
     next(error);
   }

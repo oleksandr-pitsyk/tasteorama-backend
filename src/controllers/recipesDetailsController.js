@@ -22,10 +22,7 @@ export const getRecipeById = async (req, res, next) => {
     }
 
     // Відповідь сервера зі статусом 200 та рецептом
-    res.status(200).json({
-      message: 'Recipe Information',
-      data: recipe,
-    });
+    res.status(200).json({ recipe });
   } catch (error) {
     next(error);
   }

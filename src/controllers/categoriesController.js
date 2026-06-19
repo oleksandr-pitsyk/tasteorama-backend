@@ -25,10 +25,7 @@ export const getCategories = async (req, res, next) => {
     }
 
     // Повертаємо дані зі списком категорій
-    res.status(200).json({
-      message: 'List of categories',
-      data: categories,
-    });
+    res.status(200).json({ categories });
   } catch (error) {
     next(error);
   }
