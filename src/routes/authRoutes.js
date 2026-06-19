@@ -11,6 +11,9 @@ import { celebrate } from 'celebrate';
 // Імпорт middleware перевірки аутентифікації
 import { authenticate } from '../middleware/authenticate.js';
 
+// Імпорт middleware перевірки refreshToken
+import { authentificateRefresh } from '../middleware/authentificateRefresh.js';
+
 // Імпорт схем валідації
 import { registerUserSchema, loginUserSchema } from '../validations/authValidation.js';
 
@@ -27,19 +30,19 @@ const router = Router();
 
 // POST /auth/register - Реєстрація нового користувача.
 // ==========================================================================================
-router.post('/api/auth/register', celebrate(registerUserSchema), registerUser);
+router.post('/auth/register', celebrate(registerUserSchema), registerUser);
 
 // POST /auth/login - Логін зареєстрованого користувача (Вхід в систему).
 // ==========================================================================================
-router.post('/api/auth/login', celebrate(loginUserSchema), loginUser);
+router.post('/auth/login', celebrate(loginUserSchema), loginUser);
 
 // POST /auth/logout - Виход користувача із системи.
 // ==========================================================================================
-router.post('/api/auth/logout', authenticate, logoutUser);
+router.post('/auth/logout', authenticate, logoutUser);
 
 // GET /auth/refresh - Оновлення сесії за наявності refreshToken.
 // ==========================================================================================
-router.get('/api/auth/refresh', refreshUserSession);
+router.get('/auth/refresh', authentificateRefresh, refreshUserSession);
 
 // Експорт роутера
 export default router;

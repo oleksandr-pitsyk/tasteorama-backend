@@ -4,7 +4,11 @@ import { Router } from 'express';
 import { celebrate } from 'celebrate';
 
 // Імпорт схем валідації
-import { getRecipesSchema, createRecipeSchema } from '../validations/recipeValidation.js';
+import {
+  getRecipesSchema,
+  getRecipesByIdSchema,
+  createRecipeSchema,
+} from '../validations/recipeValidation.js';
 
 // Імпорт контролерів
 import { getAllRecipes } from '../controllers/recipesSearchController.js';
@@ -23,17 +27,23 @@ import { upload } from '../middleware/multer.js';
 const router = Router();
 
 // БЛОК ОБРАНОГО (FAVORITES)
-router.get('/favorites', authenticate, getFavoriteRecipes);
-router.post('/favorites/:recipeId', authenticate, addFavorites);
-router.delete('/favorites/:recipeId', authenticate, deleteFavorites);
+// GET  /recipes/favorites - Отримання списку улюблених рецептів
+router.get('/recipes/favorites', authenticate, celebrate(getRecipesSchema), getFavoriteRecipes);
+// POST  /recipes/favorites - Додавання рецепту у список улюблених рецептів
+router.post('/recipes/favorites/:recipeId', authenticate, addFavorites);
+// DELETE  /favorites - Видалення рецепту зі списку улюблених рецептів
+router.delete('/recipes/favorites/:recipeId', authenticate, deleteFavorites);
 
-// ІНШІ МАРШРУТИ РЕЦЕПТІВ
-router.get('/', celebrate(getRecipesSchema), getAllRecipes);
+// GET  /recipes/my - Отримання списку своїх рецептів
+router.get('/recipes/my', authenticate, celebrate(getRecipesSchema), getMyRecipes);
+
+// GET  /recipes - Отримання списку всіх рецептів
+router.get('/recipes', celebrate(getRecipesSchema), getAllRecipes);
 
 // POST /api/recipes - Створення власного рецепту
 // upload.single, щоб дозволити створення без фото
 router.post(
-  '/',
+  '/recipes',
   authenticate,
   (req, res, next) => {
     upload.single('image')(req, res, (err) => {
@@ -45,10 +55,8 @@ router.post(
   createRecipe,
 );
 
-router.get('/my', authenticate, celebrate(getRecipesSchema), getMyRecipes);
-
-// ДИНАМІЧНІ МАРШРУТИ
-router.get('/:recipeId', getRecipeById);
+// GET  /recipes/:recipeId - Отримання рецепту за Id
+router.get('/recipes/:recipeId', celebrate(getRecipesByIdSchema), getRecipeById);
 
 // Експорт роутера
 export default router;

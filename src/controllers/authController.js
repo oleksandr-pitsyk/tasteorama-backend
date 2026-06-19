@@ -62,10 +62,7 @@ export const registerUser = async (req, res, next) => {
     setSessionCookies(res, newSession);
 
     // Відправляємо дані користувача (без пароля) у відповіді
-    res.status(201).json({
-      message: 'Information about the new user',
-      data: newUser,
-    });
+    res.status(201).json({ newUser });
   } catch (error) {
     next(error);
   }
@@ -107,10 +104,7 @@ export const loginUser = async (req, res, next) => {
 
     // Повертаємо дані про поточного користувача
     // У разі вдалої обробки запиту відповідь сервера має бути зі статусом 200
-    res.status(200).json({
-      message: 'Information about the current user',
-      data: user,
-    });
+    res.status(200).json({ user });
   } catch (error) {
     next(error);
   }

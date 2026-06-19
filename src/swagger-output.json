@@ -322,7 +322,7 @@
     }
   },
   "paths": {
-    "/api/auth/register": {
+    "/auth/register": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Реєстрація нового користувача",
@@ -394,7 +394,7 @@
         }
       }
     },
-    "/api/auth/login": {
+    "/auth/login": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Вхід в акаунт",
@@ -461,7 +461,7 @@
         }
       }
     },
-    "/api/auth/refresh": {
+    "/auth/refresh": {
       "get": {
         "tags": ["Authentication"],
         "summary": "Оновлення сесії",
@@ -513,7 +513,7 @@
         }
       }
     },
-    "/api/auth/logout": {
+    "/auth/logout": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Вихід з акаунта",
@@ -540,7 +540,7 @@
         }
       }
     },
-    "/api/users/me": {
+    "/users/me": {
       "get": {
         "tags": ["Users"],
         "summary": "Отримати поточного користувача",
@@ -584,7 +584,7 @@
         }
       }
     },
-    "/api/recipes": {
+    "/recipes": {
       "get": {
         "tags": ["Recipes"],
         "summary": "Отримати всі рецепти",
@@ -801,7 +801,7 @@
         }
       }
     },
-    "/api/recipes/{recipeId}": {
+    "/recipes/{recipeId}": {
       "get": {
         "tags": ["Recipes"],
         "summary": "Отримати рецепт за ID",
@@ -853,7 +853,7 @@
         }
       }
     },
-    "/api/recipes/favorites": {
+    "/recipes/favorites": {
       "get": {
         "tags": ["Favorites"],
         "summary": "Отримати улюблені рецепти",
@@ -939,7 +939,7 @@
         }
       }
     },
-    "/api/recipes/favorites/{recipeId}": {
+    "/recipes/favorites/{recipeId}": {
       "post": {
         "tags": ["Favorites"],
         "summary": "Додати рецепт до улюблених",
@@ -1083,7 +1083,7 @@
         }
       }
     },
-    "/api/recipes/my": {
+    "/recipes/my": {
       "get": {
         "tags": ["My Recipes"],
         "summary": "Отримання власних рецептів",
@@ -1161,7 +1161,7 @@
         }
       }
     },
-    "/api/categories": {
+    "/categories": {
       "get": {
         "tags": ["Categories"],
         "summary": "Отримати всі категорії",
@@ -1202,7 +1202,7 @@
         }
       }
     },
-    "/api/ingredients": {
+    "/ingredients": {
       "get": {
         "tags": ["Ingredients"],
         "summary": "Отримати всі інгредієнти",

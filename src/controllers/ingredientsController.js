@@ -26,10 +26,7 @@ export const getIngredients = async (req, res, next) => {
     }
 
     // Повертаємо дані зі списком інгредієнтів
-    res.status(200).json({
-      message: 'List of ingredients',
-      data: ingredients,
-    });
+    res.status(200).json({ ingredients });
   } catch (error) {
     next(error);
   }

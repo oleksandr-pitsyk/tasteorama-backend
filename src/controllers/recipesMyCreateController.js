@@ -42,10 +42,7 @@ export const createRecipe = async (req, res, next) => {
       owner: req.user._id,
     });
 
-    res.status(201).json({
-      message: 'Recipe created successfully',
-      data: recipe,
-    });
+    res.status(201).json({ recipe });
   } catch (error) {
     next(error);
   }

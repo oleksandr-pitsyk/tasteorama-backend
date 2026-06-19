@@ -61,7 +61,7 @@ export const authenticate = async (req, res, next) => {
 
   // Якщо користувача не знайдено
   if (!user) {
-    throw createHttpError(401, 'User not found');
+    throw createHttpError(401, '');
   }
 
   // Якщо користувач існує, додаємо його до запиту
