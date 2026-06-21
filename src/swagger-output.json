@@ -377,7 +377,7 @@
               }
             }
           },
-          "400": {
+          "409": {
             "description": "Email вже використовується або некоректні дані",
             "content": {
               "application/json": {
@@ -385,8 +385,8 @@
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 400,
-                  "message": "Email in use"
+                  "status": 409,
+                  "message": "User with this email already exists."
                 }
               }
             }
