@@ -29,7 +29,8 @@ import { createSession, setSessionCookies } from '../services/auth.js';
 //    password — рядок, мінімум 8 символів, обов’язкове (на сервері хешується через bcrypt).
 // ---------------------------------------------------------------------------------------
 // Контролер registerUser :
-//    Перевіряє, чи користувач із таким email вже існує. Якщо так — повертає через createHttpError помилку зі статусом 400 і повідомленням 'Email in use'
+//    Перевіряє, чи користувач із таким email вже існує.
+// Якщо так — повертає через createHttpError помилку зі статусом 409 і повідомленням 'User with this email already exists.'
 //    Хешує пароль за допомогою bcrypt
 //    Створює нового користувача в базі
 //    Створює нову сесію (createSession) і додає кукі (setSessionCookies) до відповіді
@@ -43,7 +44,7 @@ export const registerUser = async (req, res, next) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      throw createHttpError(400, 'Email in use');
+      throw createHttpError(409, 'User with this email already exists.');
     }
 
     // Хешуємо пароль
