@@ -18,6 +18,7 @@ import { getMyRecipes } from '../controllers/recipesMyController.js';
 import { addFavorites } from '../controllers/recipesFavoritesAddController.js';
 import { deleteFavorites } from '../controllers/recipesFavoritesDeleteController.js';
 import { getFavoriteRecipes } from '../controllers/recipesFavoritesController.js';
+import { deleteMyRecipeById } from '../controllers/recipesMyDeleteController.js';
 
 // Імпорт middleware
 import { authenticate } from '../middleware/authenticate.js';
@@ -57,6 +58,14 @@ router.post(
 
 // GET  /recipes/:recipeId - Отримання рецепту за Id
 router.get('/recipes/:recipeId', celebrate(getRecipesByIdSchema), getRecipeById);
+
+// DELETE  /recipes/:recipeId - Видалення рецепту за Id
+router.delete(
+  '/recipes/:recipeId',
+  authenticate,
+  celebrate(getRecipesByIdSchema),
+  deleteMyRecipeById,
+);
 
 // Експорт роутера
 export default router;
