@@ -851,6 +851,76 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": ["Recipes"],
+        "summary": "Видалити рецепт",
+        "description": "Видалення власного рецепту за Id. Доступно лише для авторизованих користувачів.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "recipeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "507f1f77bcf86cd799439011",
+            "description": "MongoDB ObjectId рецепта"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Рецепт успішно видалено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recipe": {
+                      "$ref": "#/components/schemas/Recipe"
+                    }
+                  }
+                },
+                "example": {
+                  "recipe": {
+                    "_id": "507f1f77bcf86cd799439011",
+                    "title": "Beef Stew",
+                    "category": "Beef"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Не аутентифікований",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Рецепт не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 404,
+                  "message": "Recipe not found"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/recipes/favorites": {
