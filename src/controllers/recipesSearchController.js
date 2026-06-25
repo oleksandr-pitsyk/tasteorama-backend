@@ -21,10 +21,7 @@ export const getAllRecipes = async (req, res, next) => {
     const skip = (page - 1) * perPage;
 
     // Створення основного запиту в БД
-    // const recipesQuery = Recipe.find();
-
-    // Створення основного запиту в БД - сортування за назвою - по зростанню
-    const recipesQuery = Recipe.find().sort({ title: 'asc' });
+    const recipesQuery = Recipe.find();
 
     // Якщо є параметр запиту по пошуку слова або частині слова (пошук тільки в title)
     // Для $regex - індекс НЕ потрібний
